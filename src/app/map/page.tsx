@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { MapPin, CreditCard, Star, X, MessageCircle, Search, Loader2, Filter, User, Clock, Trash2, Heart, History, SortAsc } from 'lucide-react';
+import { MapPin, CreditCard, Star, X, MessageCircle, Search, Loader2, Filter, User, Clock, Trash2, Heart, History, SortAsc, Navigation } from 'lucide-react';
 import Link from 'next/link';
 import ReviewForm from '@/components/ReviewForm';
 import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api';
@@ -147,10 +147,30 @@ const { isLoaded, loadError } = useLoadScript({
   libraries: GOOGLE_MAPS_LIBRARIES,
 });
 
-  // Initialize anonymous ID
+  // Initialize anonymous ID and get current location
   useEffect(() => {
     const id = getAnonymousId();
     setAnonymousId(id);
+    
+    // Get current location when page loads
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setMapCenter({ lat: latitude, lng: longitude });
+          setMapZoom(14); // Closer zoom for current location
+        },
+        (error) => {
+          console.log('Geolocation error:', error);
+          // Keep default Tokyo location if geolocation fails
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000 // 5 minutes
+        }
+      );
+    }
   }, []);
 
   const handleReviewSubmit = async (data: { paymentMethods: string[]; comment: string; rating: number }) => {
@@ -446,6 +466,27 @@ const { isLoaded, loadError } = useLoadScript({
     setSelectedRestaurant({ ...restaurant });
   };
 
+  // Get current location and center map
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setMapCenter({ lat: latitude, lng: longitude });
+          setMapZoom(14);
+        },
+        (error) => {
+          console.log('Geolocation error:', error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000
+        }
+      );
+    }
+  };
+
   // Filter restaurants based on selected payment methods
   const filteredRestaurants = useMemo(() => {
     const allRestaurants = [...sampleRestaurants, ...searchResults];
@@ -688,6 +729,15 @@ const { isLoaded, loadError } = useLoadScript({
       <div className="flex h-[calc(100vh-200px)]">
         {/* Map Container */}
         <div className="flex-1 relative">
+          {/* Current Location Button */}
+          <button
+            onClick={getCurrentLocation}
+            className="absolute top-4 right-4 z-10 bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            title="현재 위치로 이동"
+          >
+            <Navigation className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          </button>
+          
           <GoogleMap
             mapContainerClassName="w-full h-full"
             center={mapCenter}
