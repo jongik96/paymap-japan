@@ -263,7 +263,7 @@ export async function POST(request: NextRequest) {
 async function trackSearch(data: { query: string; timestamp: number }): Promise<void> {
   const key = `analytics:searches:${new Date().toISOString().split('T')[0]}`;
   await redis.hincrby(key, 'count', 1);
-  await redis.hset(key, 'lastSearch', data.timestamp);
+  await redis.hset(key, { lastSearch: data.timestamp });
 }
 
 async function trackReview(data: { restaurantId: string; timestamp: number }): Promise<void> {
@@ -275,5 +275,5 @@ async function trackReview(data: { restaurantId: string; timestamp: number }): P
 async function trackVisit(data: { restaurantId: string; timestamp: number }): Promise<void> {
   const key = `analytics:visits:${data.restaurantId}`;
   await redis.hincrby(key, 'count', 1);
-  await redis.hset(key, 'lastVisit', data.timestamp);
+  await redis.hset(key, { lastVisit: data.timestamp });
 }
