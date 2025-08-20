@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Redis } from '@upstash/redis';
+import { validateReview } from '@/lib/contentFilter';
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
@@ -58,6 +59,16 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { restaurantId, restaurantName, paymentMethods, comment, rating, anonymousId } = body;
+    
+    // 콘텐츠 필터링 검증
+    const contentValidation = validateReview(comment, 'ko'); // 기본값으로 한국어 사용
+    if (!contentValidation.isValid) {
+      return NextResponse.json({
+        error: 'Inappropriate content detected',
+        violations: contentValidation.violations,
+        warning: contentValidation.warning
+      }, { status: 400 });
+    }
 
     // Validate required fields
     if (!restaurantId || !restaurantName || !paymentMethods || !comment || !rating || !anonymousId) {

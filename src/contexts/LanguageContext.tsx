@@ -152,6 +152,19 @@ const translations = {
     'checkPayment': 'Check Payment',
     'checkPaymentDesc': 'View available payment methods and other people\'s reviews',
     'writeReviewDesc': 'Share your experience by writing a review',
+    
+    // Content Filtering
+    'contentFilter.title': 'Content Validation Result',
+    'contentFilter.violations': 'Detected Issues:',
+    'contentFilter.warning': 'Warning:',
+    'contentFilter.filteredText': 'Filtered Text:',
+    'contentFilter.inappropriateLanguage': 'Inappropriate Language Usage',
+    'contentFilter.advertising': 'Advertising Content',
+    'contentFilter.sensitiveTopic': 'Sensitive Topic Mention',
+    'contentFilter.spam': 'Spam Content',
+    'contentFilter.tooShort': 'Review too short',
+    'contentFilter.tooLong': 'Review too long',
+    'contentFilter.paymentKeywords': 'Please include content related to payment methods.',
   },
   ja: {
     // Header
@@ -291,6 +304,19 @@ const translations = {
     'checkPayment': '決済方法確認',
     'checkPaymentDesc': '利用可能な決済方法と他の人のレビューを確認しましょう',
     'writeReviewDesc': 'レビューを書いて経験を共有しましょう',
+    
+    // Content Filtering
+    'contentFilter.title': 'コンテンツ検証結果',
+    'contentFilter.violations': '発見された問題点:',
+    'contentFilter.warning': '注意事項:',
+    'contentFilter.filteredText': 'フィルタリングされたテキスト:',
+    'contentFilter.inappropriateLanguage': '不適切な言語使用',
+    'contentFilter.advertising': '広告性コンテンツ',
+    'contentFilter.sensitiveTopic': 'センシティブな話題言及',
+    'contentFilter.spam': 'スパム性コンテンツ',
+    'contentFilter.tooShort': 'レビューが短すぎる',
+    'contentFilter.tooLong': 'レビューが長すぎる',
+    'contentFilter.paymentKeywords': '決済方法に関連する内容を含めてください。',
   },
   ko: {
     // Header
@@ -430,6 +456,19 @@ const translations = {
     'checkPayment': '결제 수단 확인',
     'checkPaymentDesc': '사용 가능한 결제 수단과 다른 사람들의 리뷰를 확인하세요',
     'writeReviewDesc': '리뷰를 작성하여 경험을 공유하세요',
+    
+    // Content Filtering
+    'contentFilter.title': '콘텐츠 검증 결과',
+    'contentFilter.violations': '발견된 문제점:',
+    'contentFilter.warning': '주의사항:',
+    'contentFilter.filteredText': '필터링된 텍스트:',
+    'contentFilter.inappropriateLanguage': '부적절한 언어 사용',
+    'contentFilter.advertising': '광고성 콘텐츠',
+    'contentFilter.sensitiveTopic': '민감한 주제 언급',
+    'contentFilter.spam': '스팸성 콘텐츠',
+    'contentFilter.tooShort': '리뷰가 너무 짧음',
+    'contentFilter.tooLong': '리뷰가 너무 김',
+    'contentFilter.paymentKeywords': '결제 수단과 관련된 내용을 포함하여 작성해주세요.',
   }
 };
 

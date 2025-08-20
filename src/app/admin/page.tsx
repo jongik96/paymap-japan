@@ -14,12 +14,13 @@ import Link from 'next/link';
 import PaymentMethodStats from '@/components/PaymentMethodStats';
 import PopularRestaurants from '@/components/PopularRestaurants';
 import UserActivityDashboard from '@/components/UserActivityDashboard';
+import ContentFilterStats from '@/components/ContentFilterStats';
 
 import LanguageToggle from '@/components/LanguageToggle';
 import ThemeToggle from '@/components/ThemeToggle';
 
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'payments' | 'restaurants' | 'activity'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'payments' | 'restaurants' | 'activity' | 'content-filter'>('overview');
   const [isLoading, setIsLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [overviewStats, setOverviewStats] = useState([
@@ -98,7 +99,8 @@ export default function AdminPage() {
     { id: 'overview', label: '개요', icon: BarChart3 },
     { id: 'payments', label: '결제 수단', icon: CreditCard },
     { id: 'restaurants', label: '레스토랑', icon: TrendingUp },
-    { id: 'activity', label: '사용자 활동', icon: Users }
+    { id: 'activity', label: '사용자 활동', icon: Users },
+    { id: 'content-filter', label: '콘텐츠 필터', icon: Shield }
   ];
 
 
@@ -171,7 +173,7 @@ export default function AdminPage() {
                 return (
                   <button
                     key={tab.id}
-                                         onClick={() => setActiveTab(tab.id as 'overview' | 'payments' | 'restaurants' | 'activity')}
+                                         onClick={() => setActiveTab(tab.id as 'overview' | 'payments' | 'restaurants' | 'activity' | 'content-filter')}
                     className={`flex items-center space-x-2 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                       activeTab === tab.id
                         ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
@@ -192,7 +194,7 @@ export default function AdminPage() {
           {activeTab === 'overview' && (
             <div className="space-y-8">
               {/* Overview Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                                  {overviewStats.map((stat) => (
                   <div
                     key={stat.label}
@@ -231,6 +233,10 @@ export default function AdminPage() {
 
           {activeTab === 'activity' && (
             <UserActivityDashboard isLoading={isLoading} />
+          )}
+          
+          {activeTab === 'content-filter' && (
+            <ContentFilterStats isLoading={isLoading} />
           )}
         </div>
 
