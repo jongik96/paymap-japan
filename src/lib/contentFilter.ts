@@ -63,13 +63,11 @@ const ADVERTISING_PATTERNS = [
   /\b(상담|문의|contact|inquiry|consultation)\b/gi,
   /\b(예약|reservation|booking|appointment)\b/gi,
   /\b(배송|delivery|shipping|택배|courier)\b/gi,
-  /\b(결제|payment|pay|credit card|debit card)\b/gi,
   
   // 일본어 광고 키워드
   /\b(広告|宣伝|プロモーション|セール|割引|特価|特売)\b/gi,
   /\b(無料|フリー|無料体験|フリートライアル|お得|お買い得)\b/gi,
   /\b(相談|お問い合わせ|お問合せ|コンタクト|予約|予約受付)\b/gi,
-  /\b(配送|デリバリー|送料|配達|お支払い|お支払|決済)\b/gi,
 ];
 
 // 종교/정치적 발언 패턴
