@@ -1,12 +1,17 @@
 'use client';
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { MapPin, CreditCard, Star, X, MessageCircle, Search, Loader2, Filter, User, Clock, Trash2 } from 'lucide-react';
+import { MapPin, CreditCard, Star, X, MessageCircle, Search, Loader2, Filter, User, Clock, Trash2, Heart, History, SortAsc } from 'lucide-react';
 import Link from 'next/link';
 import ReviewForm from '@/components/ReviewForm';
 import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api';
 import { reviewsApi, type Review, type Restaurant } from '@/lib/api';
 import ThemeToggle from '@/components/ThemeToggle';
+import AdvancedFilters from '@/components/AdvancedFilters';
+import SortOptions, { type SortOption } from '@/components/SortOptions';
+import SearchHistory from '@/components/SearchHistory';
+import Favorites, { addToFavorites, isInFavorites } from '@/components/Favorites';
+import { addSearchToHistory } from '@/components/SearchHistory';
 
 
 
@@ -105,6 +110,24 @@ export default function MapPage() {
   const [selectedPaymentMethods, setSelectedPaymentMethods] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [anonymousId, setAnonymousId] = useState<string>('');
+  
+  // Advanced search states
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [showSortOptions, setShowSortOptions] = useState(false);
+  const [showSearchHistory, setShowSearchHistory] = useState(false);
+  const [showFavorites, setShowFavorites] = useState(false);
+  const [currentSort, setCurrentSort] = useState<SortOption>('rating');
+  const [isAscending, setIsAscending] = useState(false);
+  
+  // Advanced filter states
+  const [advancedFilters, setAdvancedFilters] = useState({
+    priceRange: [] as string[],
+    rating: 0,
+    distance: 10,
+    openNow: false,
+    hasReviews: false,
+    paymentMethods: [] as string[]
+  });
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
@@ -245,6 +268,9 @@ export default function MapPage() {
 
           setSearchResults(restaurants);
           
+          // Add to search history
+          addSearchToHistory(query, { lat: mapCenter.lat, lng: mapCenter.lng });
+          
           // Center map on first result
           if (restaurants.length > 0) {
             setMapCenter({ lat: restaurants[0].lat, lng: restaurants[0].lng });
@@ -285,6 +311,51 @@ export default function MapPage() {
 
   const clearFilters = () => {
     setSelectedPaymentMethods([]);
+  };
+
+  // Advanced search handlers
+  const handleAdvancedFiltersChange = (filters: any) => {
+    setAdvancedFilters(filters);
+  };
+
+  const handleAdvancedFiltersClear = () => {
+    setAdvancedFilters({
+      priceRange: [],
+      rating: 0,
+      distance: 10,
+      openNow: false,
+      hasReviews: false,
+      paymentMethods: []
+    });
+  };
+
+  const handleSortChange = (sort: SortOption) => {
+    setCurrentSort(sort);
+  };
+
+  const handleDirectionChange = (ascending: boolean) => {
+    setIsAscending(ascending);
+  };
+
+  const handleSearchHistorySelect = (query: string, location?: { lat: number; lng: number }) => {
+    setSearchQuery(query);
+    if (location) {
+      setMapCenter(location);
+      setMapZoom(15);
+    }
+    searchRestaurants(query);
+  };
+
+  const handleFavoriteRestaurantSelect = (restaurant: Restaurant) => {
+    setSelectedRestaurant(restaurant);
+    setMapCenter({ lat: restaurant.lat, lng: restaurant.lng });
+    setMapZoom(15);
+  };
+
+  const handleAddToFavorites = (restaurant: Restaurant) => {
+    addToFavorites(restaurant);
+    // Force re-render to update favorite status
+    setSelectedRestaurant({ ...restaurant });
   };
 
   // Filter restaurants based on selected payment methods
@@ -405,30 +476,77 @@ export default function MapPage() {
             )}
           </form>
 
-          {/* Filter Toggle and Payment Methods */}
-          <div className="flex items-center justify-between">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
-            >
-              <Filter className="h-4 w-4" />
-              <span>Filter by Payment Methods</span>
-              {selectedPaymentMethods.length > 0 && (
-                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-                  {selectedPaymentMethods.length}
-                </span>
-              )}
-            </button>
-            
-            {selectedPaymentMethods.length > 0 && (
-              <button
-                onClick={clearFilters}
-                className="text-sm text-blue-600 hover:text-blue-700 underline"
-              >
-                Clear Filters
-              </button>
-            )}
-          </div>
+                     {/* Advanced Search Tools */}
+           <div className="flex items-center justify-between">
+             <div className="flex items-center space-x-3">
+               {/* Basic Payment Methods Filter */}
+               <button
+                 onClick={() => setShowFilters(!showFilters)}
+                 className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
+               >
+                 <Filter className="h-4 w-4" />
+                 <span>Payment Methods</span>
+                 {selectedPaymentMethods.length > 0 && (
+                   <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                     {selectedPaymentMethods.length}
+                   </span>
+                 )}
+               </button>
+
+               {/* Advanced Filters */}
+               <button
+                 onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                 className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
+               >
+                 <Filter className="h-4 w-4" />
+                 <span>Advanced Filters</span>
+                 {(advancedFilters.priceRange.length > 0 || advancedFilters.rating > 0 || advancedFilters.distance !== 10 || advancedFilters.openNow || advancedFilters.hasReviews) && (
+                   <span className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
+                     Active
+                   </span>
+                 )}
+               </button>
+
+               {/* Sort Options */}
+               <button
+                 onClick={() => setShowSortOptions(!showSortOptions)}
+                 className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
+               >
+                 <SortAsc className="h-4 w-4" />
+                 <span>Sort</span>
+               </button>
+
+               {/* Search History */}
+               <button
+                 onClick={() => setShowSearchHistory(!showSearchHistory)}
+                 className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
+               >
+                 <History className="h-4 w-4" />
+                 <span>History</span>
+               </button>
+
+               {/* Favorites */}
+               <button
+                 onClick={() => setShowFavorites(!showFavorites)}
+                 className="flex items-center space-x-2 text-red-600 hover:text-red-700 transition-colors"
+               >
+                 <Heart className="h-4 w-4" />
+                 <span>Favorites</span>
+               </button>
+             </div>
+             
+             {(selectedPaymentMethods.length > 0 || advancedFilters.priceRange.length > 0 || advancedFilters.rating > 0 || advancedFilters.distance !== 10 || advancedFilters.openNow || advancedFilters.hasReviews) && (
+               <button
+                 onClick={() => {
+                   clearFilters();
+                   handleAdvancedFiltersClear();
+                 }}
+                 className="text-sm text-blue-600 hover:text-blue-700 underline"
+               >
+                 Clear All Filters
+               </button>
+             )}
+           </div>
 
           {/* Payment Methods Filter */}
           {showFilters && (
@@ -522,16 +640,29 @@ export default function MapPage() {
         {selectedRestaurant && (
           <div className="w-96 bg-white shadow-lg border-l overflow-y-auto">
             <div className="p-6">
-              {/* Restaurant Header */}
-              <div className="flex justify-between items-start mb-4">
-                <h2 className="text-xl font-bold text-gray-900">{selectedRestaurant.name}</h2>
-                <button
-                  onClick={() => setSelectedRestaurant(null)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
+                             {/* Restaurant Header */}
+               <div className="flex justify-between items-start mb-4">
+                 <h2 className="text-xl font-bold text-gray-900">{selectedRestaurant.name}</h2>
+                 <div className="flex items-center space-x-2">
+                   <button
+                     onClick={() => handleAddToFavorites(selectedRestaurant)}
+                     className={`p-2 rounded-full transition-colors ${
+                       isInFavorites(selectedRestaurant.id)
+                         ? 'text-red-500 hover:text-red-600'
+                         : 'text-gray-400 hover:text-red-500'
+                     }`}
+                     title={isInFavorites(selectedRestaurant.id) ? 'Remove from favorites' : 'Add to favorites'}
+                   >
+                     <Heart className={`h-5 w-5 ${isInFavorites(selectedRestaurant.id) ? 'fill-current' : ''}`} />
+                   </button>
+                   <button
+                     onClick={() => setSelectedRestaurant(null)}
+                     className="text-gray-400 hover:text-gray-600 transition-colors"
+                   >
+                     <X className="h-5 w-5" />
+                   </button>
+                 </div>
+               </div>
 
               {/* Restaurant Details */}
               <div className="mb-4">
@@ -662,15 +793,46 @@ export default function MapPage() {
           </div>
         )}
 
-        {/* Review Form Modal */}
-        {showReviewForm && selectedRestaurant && (
-          <ReviewForm
-            restaurantName={selectedRestaurant.name}
-            onClose={() => setShowReviewForm(false)}
-            onSubmit={handleReviewSubmit}
-          />
-        )}
-      </div>
-    </div>
-  );
-}
+                 {/* Review Form Modal */}
+         {showReviewForm && selectedRestaurant && (
+           <ReviewForm
+             restaurantName={selectedRestaurant.name}
+             onClose={() => setShowReviewForm(false)}
+             onSubmit={handleReviewSubmit}
+           />
+         )}
+
+         {/* Advanced Filters Modal */}
+         <AdvancedFilters
+           isOpen={showAdvancedFilters}
+           onClose={() => setShowAdvancedFilters(false)}
+           filters={advancedFilters}
+           onFiltersChange={handleAdvancedFiltersChange}
+           onClearAll={handleAdvancedFiltersClear}
+         />
+
+         {/* Sort Options Modal */}
+         <SortOptions
+           currentSort={currentSort}
+           onSortChange={handleSortChange}
+           isAscending={isAscending}
+           onDirectionChange={handleDirectionChange}
+         />
+
+         {/* Search History Modal */}
+         <SearchHistory
+           isOpen={showSearchHistory}
+           onClose={() => setShowSearchHistory(false)}
+           onSearchSelect={handleSearchHistorySelect}
+         />
+
+         {/* Favorites Modal */}
+         <Favorites
+           isOpen={showFavorites}
+           onClose={() => setShowFavorites(false)}
+           onRestaurantSelect={handleFavoriteRestaurantSelect}
+         />
+       </div>
+     </div>
+   );
+ }
