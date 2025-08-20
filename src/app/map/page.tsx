@@ -100,6 +100,9 @@ const loadReviews = async (restaurantId: string): Promise<Review[]> => {
   }
 };
 
+// Google Maps libraries를 상수로 정의하여 경고 방지
+const GOOGLE_MAPS_LIBRARIES: ("places")[] = ['places'];
+
 export default function MapPage() {
   const { t } = useLanguage();
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
@@ -115,7 +118,6 @@ export default function MapPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Restaurant[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  // 기본 위치를 교토로 설정 (위치 정보를 허용하지 않는 경우)
   // 기본 위치를 교토로 설정 (위치 정보를 허용하지 않는 경우)
   const [mapCenter, setMapCenter] = useState({ lat: 35.0116, lng: 135.7681 }); // 교토
   const [mapZoom, setMapZoom] = useState(12);
@@ -142,13 +144,10 @@ export default function MapPage() {
     paymentMethods: [] as string[]
   });
 
-  // Google Maps libraries를 상수로 정의하여 경고 방지
-const GOOGLE_MAPS_LIBRARIES: ("places")[] = ['places'];
-
-const { isLoaded, loadError } = useLoadScript({
-  googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
-  libraries: GOOGLE_MAPS_LIBRARIES,
-});
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+    libraries: GOOGLE_MAPS_LIBRARIES,
+  });
 
   // Initialize anonymous ID and get current location
   useEffect(() => {
@@ -163,9 +162,29 @@ const { isLoaded, loadError } = useLoadScript({
           (position) => {
             const { latitude, longitude } = position.coords;
             console.log('✅ Current location detected:', latitude, longitude);
-            setMapCenter({ lat: latitude, lng: longitude });
-            setMapZoom(14); // Closer zoom for current location
-            setLocationStatus('success');
+            
+            // Check if the detected location is actually in Kyoto area
+            // Kyoto coordinates: approximately 35.0116, 135.7681
+            const kyotoLat = 35.0116;
+            const kyotoLng = 135.7681;
+            const distanceThreshold = 0.1; // About 11km radius
+            
+            const latDiff = Math.abs(latitude - kyotoLat);
+            const lngDiff = Math.abs(longitude - kyotoLng);
+            
+            if (latDiff < distanceThreshold && lngDiff < distanceThreshold) {
+              // User is actually in Kyoto area
+              console.log('📍 User is in Kyoto area, using Kyoto coordinates');
+              setMapCenter({ lat: kyotoLat, lng: kyotoLng });
+              setMapZoom(14);
+              setLocationStatus('success');
+            } else {
+              // User is not in Kyoto, use detected location
+              console.log('📍 User is not in Kyoto, using detected location:', latitude, longitude);
+              setMapCenter({ lat: latitude, lng: longitude });
+              setMapZoom(14);
+              setLocationStatus('success');
+            }
           },
           (error) => {
             console.log('❌ Geolocation error:', error);
@@ -181,6 +200,7 @@ const { isLoaded, loadError } = useLoadScript({
         );
       } else {
         console.log('❌ Geolocation not supported, using Kyoto as default');
+        setLocationStatus('default');
       }
     };
 
@@ -200,6 +220,11 @@ const { isLoaded, loadError } = useLoadScript({
     
     return () => clearTimeout(timer);
   }, []);
+
+  // Monitor mapCenter changes for debugging
+  useEffect(() => {
+    console.log('🗺️ Map center updated to:', mapCenter.lat, mapCenter.lng);
+  }, [mapCenter]);
 
   const handleReviewSubmit = async (data: { paymentMethods: string[]; comment: string; rating: number }) => {
     if (!selectedRestaurant) return;
@@ -498,22 +523,41 @@ const { isLoaded, loadError } = useLoadScript({
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
       console.log('🔄 Getting current location...');
-              navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            console.log('✅ Current location updated:', latitude, longitude);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          console.log('✅ Current location updated:', latitude, longitude);
+          
+          // Check if the detected location is actually in Kyoto area
+          const kyotoLat = 35.0116;
+          const kyotoLng = 135.7681;
+          const distanceThreshold = 0.1; // About 11km radius
+          
+          const latDiff = Math.abs(latitude - kyotoLat);
+          const lngDiff = Math.abs(longitude - kyotoLng);
+          
+          if (latDiff < distanceThreshold && lngDiff < distanceThreshold) {
+            // User is actually in Kyoto area
+            console.log('📍 User is in Kyoto area, using Kyoto coordinates');
+            setMapCenter({ lat: kyotoLat, lng: kyotoLng });
+            setMapZoom(14);
+            setLocationStatus('success');
+          } else {
+            // User is not in Kyoto, use detected location
+            console.log('📍 User is not in Kyoto, using detected location:', latitude, longitude);
             setMapCenter({ lat: latitude, lng: longitude });
             setMapZoom(14);
             setLocationStatus('success');
-          },
-          (error) => {
-            console.log('❌ Geolocation error:', error);
-            console.log('📍 Moving to Kyoto due to geolocation error');
-            // 위치 정보를 허용하지 않는 경우 교토로 이동
-            setMapCenter({ lat: 35.0116, lng: 135.7681 });
-            setMapZoom(12);
-            setLocationStatus('error');
-          },
+          }
+        },
+        (error) => {
+          console.log('❌ Geolocation error:', error);
+          console.log('📍 Moving to Kyoto due to geolocation error');
+          // 위치 정보를 허용하지 않는 경우 교토로 이동
+          setMapCenter({ lat: 35.0116, lng: 135.7681 });
+          setMapZoom(12);
+          setLocationStatus('error');
+        },
         {
           enableHighAccuracy: true,
           timeout: 15000,
@@ -526,6 +570,7 @@ const { isLoaded, loadError } = useLoadScript({
       // 교토로 이동
       setMapCenter({ lat: 35.0116, lng: 135.7681 });
       setMapZoom(12);
+      setLocationStatus('default');
     }
   };
 
@@ -549,8 +594,9 @@ const { isLoaded, loadError } = useLoadScript({
     if (filteredRestaurants.length > 0 && selectedPaymentMethods.length > 0) {
       const avgLat = filteredRestaurants.reduce((sum, r) => sum + r.lat, 0) / filteredRestaurants.length;
       const avgLng = filteredRestaurants.reduce((sum, r) => sum + r.lng, 0) / filteredRestaurants.length;
-      setMapCenter({ lat: avgLat, lng: avgLng });
-      setMapZoom(13);
+      // Don't auto-update map center when filters change to preserve user's location
+      // setMapCenter({ lat: avgLat, lng: avgLng });
+      // setMapZoom(13);
     }
   }, [filteredRestaurants, selectedPaymentMethods]);
 
@@ -824,12 +870,10 @@ const { isLoaded, loadError } = useLoadScript({
           </div>
           
           <GoogleMap
+            key={`${mapCenter.lat}-${mapCenter.lng}-${mapZoom}`}
             mapContainerClassName="w-full h-full"
             center={mapCenter}
             zoom={mapZoom}
-            onCenterChanged={() => {
-              // Center will be updated automatically by Google Maps
-            }}
             options={{
               styles: [
                 {
