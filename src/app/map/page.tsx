@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { MapPin, CreditCard, Star, X, MessageCircle, Search, Loader2, Filter, User, Clock, Trash2, Heart, History, SortAsc, Navigation } from 'lucide-react';
+import { MapPin, CreditCard, Star, X, MessageCircle, Search, Loader2, Filter, User, Clock, Trash2, Heart, History, Navigation } from 'lucide-react';
 import Link from 'next/link';
 import ReviewForm from '@/components/ReviewForm';
 import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api';
@@ -592,8 +592,6 @@ export default function MapPage() {
   // Update map center when filters change
   useMemo(() => {
     if (filteredRestaurants.length > 0 && selectedPaymentMethods.length > 0) {
-      const avgLat = filteredRestaurants.reduce((sum, r) => sum + r.lat, 0) / filteredRestaurants.length;
-      const avgLng = filteredRestaurants.reduce((sum, r) => sum + r.lng, 0) / filteredRestaurants.length;
       // Don't auto-update map center when filters change to preserve user's location
       // setMapCenter({ lat: avgLat, lng: avgLng });
       // setMapZoom(13);
@@ -701,7 +699,7 @@ export default function MapPage() {
                 <span className="mr-2">💡</span>
                 <span>
                   <strong>일본 전체 지역의 식당을 검색할 수 있습니다!</strong><br/>
-                  예시: "라멘", "스시", "오사카 음식점", "도쿄 카페", "교토 전통음식" 등<br/>
+                  예시: &ldquo;라멘&rdquo;, &ldquo;스시&rdquo;, &ldquo;오사카 음식점&rdquo;, &ldquo;도쿄 카페&rdquo;, &ldquo;교토 전통음식&rdquo; 등<br/>
                   검색 결과는 일본 전역에서 찾아집니다.
                 </span>
               </p>
