@@ -33,8 +33,29 @@ export default function PaymentMethodStats({
 }: PaymentMethodStatsProps) {
   const { t } = useLanguage();
   const [viewMode, setViewMode] = useState<'list' | 'chart'>('list');
+  const [actualData, setActualData] = useState<PaymentMethodStat[]>(sampleData);
 
-  const totalCount = data.reduce((sum, item) => sum + item.count, 0);
+  // 실제 데이터 가져오기
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/analytics?type=payment-methods');
+        if (response.ok) {
+          const result = await response.json();
+          if (result.stats && result.stats.length > 0) {
+            setActualData(result.stats);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch payment method stats:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const displayData = actualData.length > 0 ? actualData : sampleData;
+  const totalCount = displayData.reduce((sum, item) => sum + item.count, 0);
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
@@ -125,7 +146,7 @@ export default function PaymentMethodStats({
       {/* List View */}
       {viewMode === 'list' && (
         <div className="space-y-4">
-          {data.map((item, index) => (
+          {displayData.map((item, index) => (
             <div
               key={item.method}
               className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -173,7 +194,7 @@ export default function PaymentMethodStats({
         <div className="space-y-6">
           {/* Simple Bar Chart */}
           <div className="space-y-3">
-            {data.map((item) => (
+            {displayData.map((item) => (
               <div key={item.method} className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">

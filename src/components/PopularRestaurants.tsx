@@ -92,6 +92,28 @@ export default function PopularRestaurants({
 }: PopularRestaurantsProps) {
   const { t } = useLanguage();
   const [sortBy, setSortBy] = useState<'rating' | 'reviews' | 'visits'>('rating');
+  const [actualData, setActualData] = useState<PopularRestaurant[]>(sampleData);
+
+  // 실제 데이터 가져오기
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/analytics?type=popular-restaurants');
+        if (response.ok) {
+          const result = await response.json();
+          if (result.restaurants && result.restaurants.length > 0) {
+            setActualData(result.restaurants);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch popular restaurants:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const displayData = actualData.length > 0 ? actualData : sampleData;
 
   const getRankIcon = (index: number) => {
     switch (index) {
@@ -132,7 +154,7 @@ export default function PopularRestaurants({
     }
   };
 
-  const sortedData = [...data].sort((a, b) => {
+  const sortedData = [...displayData].sort((a, b) => {
     switch (sortBy) {
       case 'rating':
         return b.rating - a.rating;
