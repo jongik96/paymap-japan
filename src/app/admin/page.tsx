@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Shield, 
   BarChart3, 
@@ -22,34 +22,76 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'payments' | 'restaurants' | 'activity'>('overview');
   const [isLoading, setIsLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [overviewStats, setOverviewStats] = useState([
+    { label: '총 사용자', value: '0', change: '0%', color: 'blue' },
+    { label: '총 리뷰', value: '0', change: '0%', color: 'green' },
+    { label: '총 레스토랑', value: '0', change: '0%', color: 'orange' },
+    { label: '월 활성 사용자', value: '0', change: '0%', color: 'purple' }
+  ]);
 
-  const refreshData = () => {
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      setLastUpdated(new Date());
-    }, 2000);
+  // 실제 데이터 가져오기
+  const fetchOverviewStats = async () => {
+    try {
+      const response = await fetch('/api/analytics?type=overview');
+      if (response.ok) {
+        const data = await response.json();
+        setOverviewStats([
+          { label: '총 사용자', value: data.totalUsers?.toLocaleString() || '0', change: '+0%', color: 'blue' },
+          { label: '총 리뷰', value: data.totalReviews?.toLocaleString() || '0', change: '+0%', color: 'green' },
+          { label: '총 레스토랑', value: data.totalRestaurants?.toLocaleString() || '0', change: '+0%', color: 'orange' },
+          { label: '월 활성 사용자', value: data.monthlyActiveUsers?.toLocaleString() || '0', change: '+0%', color: 'purple' }
+        ]);
+      }
+    } catch (error) {
+      console.error('Failed to fetch overview stats:', error);
+    }
   };
 
-  const exportData = () => {
-    // Simulate data export
-    const data = {
-      exportTime: new Date().toISOString(),
-      totalUsers: 24567,
-      totalReviews: 5234,
-      totalRestaurants: 1247
-    };
-    
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `paymap-analytics-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+  // 컴포넌트 마운트 시 데이터 가져오기
+  useEffect(() => {
+    fetchOverviewStats();
+  }, []);
+
+  const refreshData = async () => {
+    setIsLoading(true);
+    try {
+      await fetchOverviewStats();
+      setLastUpdated(new Date());
+    } catch (error) {
+      console.error('Failed to refresh data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const exportData = async () => {
+    try {
+      // 실제 데이터 가져오기
+      const response = await fetch('/api/analytics?type=overview');
+      if (response.ok) {
+        const data = await response.json();
+        
+        const exportData = {
+          exportTime: new Date().toISOString(),
+          totalUsers: data.totalUsers || 0,
+          totalReviews: data.totalReviews || 0,
+          totalRestaurants: data.totalRestaurants || 0,
+          monthlyActiveUsers: data.monthlyActiveUsers || 0
+        };
+        
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `paymap-analytics-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error('Failed to export data:', error);
+    }
   };
 
   const tabs = [
@@ -59,12 +101,7 @@ export default function AdminPage() {
     { id: 'activity', label: '사용자 활동', icon: Users }
   ];
 
-  const overviewStats = [
-    { label: '총 사용자', value: '24,567', change: '+12.3%', color: 'blue' },
-    { label: '총 리뷰', value: '5,234', change: '+8.7%', color: 'green' },
-    { label: '총 레스토랑', value: '1,247', change: '+5.2%', color: 'orange' },
-    { label: '월 활성 사용자', value: '8,912', change: '+15.6%', color: 'purple' }
-  ];
+
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
