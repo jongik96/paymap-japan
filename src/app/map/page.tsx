@@ -21,9 +21,9 @@ const sampleRestaurants: Restaurant[] = [
   {
     id: '1',
     name: 'Ramen Yamamoto',
-    address: '2-1-1 Shibuya, Shibuya-ku, Tokyo',
-    lat: 35.6581,
-    lng: 139.7016,
+    address: '2-1-1 Gion, Higashiyama-ku, Kyoto',
+    lat: 35.0116,
+    lng: 135.7681,
     paymentMethods: ['Cash', 'Credit Card', 'Suica', 'PayPay'],
     rating: 4.5,
     reviewCount: 23
@@ -31,9 +31,9 @@ const sampleRestaurants: Restaurant[] = [
   {
     id: '2',
     name: 'Sushi Sato',
-    address: '5-2-1 Roppongi, Minato-ku, Tokyo',
-    lat: 35.6654,
-    lng: 139.7296,
+    address: '5-2-1 Pontocho, Nakagyo-ku, Kyoto',
+    lat: 35.0116,
+    lng: 135.7681,
     paymentMethods: ['Cash', 'Credit Card', 'Suica'],
     rating: 4.8,
     reviewCount: 45
@@ -41,9 +41,9 @@ const sampleRestaurants: Restaurant[] = [
   {
     id: '3',
     name: 'Udon Kinokuni',
-    address: '3-1-1 Shinjuku, Shinjuku-ku, Tokyo',
-    lat: 35.6909,
-    lng: 139.7005,
+    address: '3-1-1 Arashiyama, Ukyo-ku, Kyoto',
+    lat: 35.0116,
+    lng: 135.7681,
     paymentMethods: ['Cash', 'Credit Card', 'PayPay', 'LINE Pay'],
     rating: 4.2,
     reviewCount: 18
@@ -116,8 +116,10 @@ export default function MapPage() {
   const [searchResults, setSearchResults] = useState<Restaurant[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   // 기본 위치를 교토로 설정 (위치 정보를 허용하지 않는 경우)
+  // 기본 위치를 교토로 설정 (위치 정보를 허용하지 않는 경우)
   const [mapCenter, setMapCenter] = useState({ lat: 35.0116, lng: 135.7681 }); // 교토
   const [mapZoom, setMapZoom] = useState(12);
+  const [locationStatus, setLocationStatus] = useState<'detecting' | 'success' | 'error' | 'default'>('detecting');
   const [selectedPaymentMethods, setSelectedPaymentMethods] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [anonymousId, setAnonymousId] = useState<string>('');
@@ -156,17 +158,20 @@ const { isLoaded, loadError } = useLoadScript({
     // Get current location when page loads
     const getLocation = () => {
       if (navigator.geolocation) {
+        console.log('Attempting to get current location...');
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
-            console.log('Current location detected:', latitude, longitude);
+            console.log('✅ Current location detected:', latitude, longitude);
             setMapCenter({ lat: latitude, lng: longitude });
             setMapZoom(14); // Closer zoom for current location
+            setLocationStatus('success');
           },
           (error) => {
-            console.log('Geolocation error:', error);
-            // 위치 정보를 허용하지 않는 경우 교토로 설정
-            console.log('Using Kyoto as default location due to geolocation error');
+            console.log('❌ Geolocation error:', error);
+            console.log('📍 Using Kyoto as default location due to geolocation error');
+            setLocationStatus('error');
+            // 에러가 발생해도 교토는 이미 기본값으로 설정되어 있음
           },
           {
             enableHighAccuracy: true,
@@ -175,7 +180,7 @@ const { isLoaded, loadError } = useLoadScript({
           }
         );
       } else {
-        console.log('Geolocation not supported, using Kyoto as default');
+        console.log('❌ Geolocation not supported, using Kyoto as default');
       }
     };
 
@@ -183,7 +188,15 @@ const { isLoaded, loadError } = useLoadScript({
     getLocation();
     
     // Also try after a short delay in case of permission issues
-    const timer = setTimeout(getLocation, 1000);
+    const timer = setTimeout(() => {
+      console.log('🔄 Retrying location detection...');
+      getLocation();
+    }, 1000);
+    
+    // Set default status if geolocation is not supported
+    if (!navigator.geolocation) {
+      setLocationStatus('default');
+    }
     
     return () => clearTimeout(timer);
   }, []);
@@ -484,19 +497,23 @@ const { isLoaded, loadError } = useLoadScript({
   // Get current location and center map
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          console.log('Current location updated:', latitude, longitude);
-          setMapCenter({ lat: latitude, lng: longitude });
-          setMapZoom(14);
-        },
-        (error) => {
-          console.log('Geolocation error:', error);
-          // 위치 정보를 허용하지 않는 경우 교토로 이동
-          setMapCenter({ lat: 35.0116, lng: 135.7681 });
-          setMapZoom(12);
-        },
+      console.log('🔄 Getting current location...');
+              navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            console.log('✅ Current location updated:', latitude, longitude);
+            setMapCenter({ lat: latitude, lng: longitude });
+            setMapZoom(14);
+            setLocationStatus('success');
+          },
+          (error) => {
+            console.log('❌ Geolocation error:', error);
+            console.log('📍 Moving to Kyoto due to geolocation error');
+            // 위치 정보를 허용하지 않는 경우 교토로 이동
+            setMapCenter({ lat: 35.0116, lng: 135.7681 });
+            setMapZoom(12);
+            setLocationStatus('error');
+          },
         {
           enableHighAccuracy: true,
           timeout: 15000,
@@ -504,7 +521,8 @@ const { isLoaded, loadError } = useLoadScript({
         }
       );
     } else {
-      console.log('Geolocation not supported');
+      console.log('❌ Geolocation not supported');
+      console.log('📍 Moving to Kyoto');
       // 교토로 이동
       setMapCenter({ lat: 35.0116, lng: 135.7681 });
       setMapZoom(12);
@@ -753,6 +771,28 @@ const { isLoaded, loadError } = useLoadScript({
       <div className="flex h-[calc(100vh-200px)]">
         {/* Map Container */}
         <div className="flex-1 relative">
+          {/* Location Status */}
+          <div className="absolute top-4 left-4 z-10">
+            {locationStatus === 'detecting' && (
+              <div className="bg-blue-100 text-blue-800 px-3 py-2 rounded-lg text-sm font-medium flex items-center space-x-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                <span>위치 감지 중...</span>
+              </div>
+            )}
+            {locationStatus === 'success' && (
+              <div className="bg-green-100 text-green-800 px-3 py-2 rounded-lg text-sm font-medium flex items-center space-x-2">
+                <span>✅</span>
+                <span>현재 위치</span>
+              </div>
+            )}
+            {locationStatus === 'error' && (
+              <div className="bg-orange-100 text-orange-800 px-3 py-2 rounded-lg text-sm font-medium flex items-center space-x-2">
+                <span>📍</span>
+                <span>교토 (기본)</span>
+              </div>
+            )}
+          </div>
+
           {/* Map Controls */}
           <div className="absolute top-4 right-4 z-10 flex flex-col space-y-2">
             {/* Zoom Controls */}
