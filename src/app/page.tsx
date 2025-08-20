@@ -82,7 +82,7 @@ export default function Home() {
             <div className="text-center">
               <div className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">3</div>
               <h4 className="font-semibold text-gray-900 mb-2">Check Payment</h4>
-              <p className="text-sm text-gray-600">View available payment methods and other people's reviews</p>
+              <p className="text-sm text-gray-600">View available payment methods and other people&apos;s reviews</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">4</div>

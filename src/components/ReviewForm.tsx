@@ -15,7 +15,6 @@ const reviewSchema = z.object({
 type ReviewFormData = z.infer<typeof reviewSchema>;
 
 interface ReviewFormProps {
-  restaurantId: string;
   restaurantName: string;
   onClose: () => void;
   onSubmit: (data: ReviewFormData) => void;
@@ -39,7 +38,7 @@ const paymentMethods = [
   'Other'
 ];
 
-export default function ReviewForm({ restaurantId, restaurantName, onClose, onSubmit }: ReviewFormProps) {
+export default function ReviewForm({ restaurantName, onClose, onSubmit }: ReviewFormProps) {
   const [hoveredRating, setHoveredRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedPaymentMethods, setSelectedPaymentMethods] = useState<string[]>([]);

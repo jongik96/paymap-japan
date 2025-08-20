@@ -661,7 +661,6 @@ export default function MapPage() {
         {/* Review Form Modal */}
         {showReviewForm && selectedRestaurant && (
           <ReviewForm
-            restaurantId={selectedRestaurant.id}
             restaurantName={selectedRestaurant.name}
             onClose={() => setShowReviewForm(false)}
             onSubmit={handleReviewSubmit}
