@@ -27,7 +27,7 @@ const sampleRestaurants: Restaurant[] = [
     paymentMethods: ['Cash', 'Credit Card', 'Suica', 'PayPay'],
     rating: 4.5,
     reviewCount: 23
-  },
+  }, 
   {
     id: '2',
     name: 'Sushi Sato',
