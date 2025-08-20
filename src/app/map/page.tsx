@@ -115,7 +115,8 @@ export default function MapPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Restaurant[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [mapCenter, setMapCenter] = useState({ lat: 35.6762, lng: 139.6503 });
+  // 기본 위치를 교토로 설정 (위치 정보를 허용하지 않는 경우)
+  const [mapCenter, setMapCenter] = useState({ lat: 35.0116, lng: 135.7681 }); // 교토
   const [mapZoom, setMapZoom] = useState(12);
   const [selectedPaymentMethods, setSelectedPaymentMethods] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
@@ -164,7 +165,8 @@ const { isLoaded, loadError } = useLoadScript({
           },
           (error) => {
             console.log('Geolocation error:', error);
-            // Keep default Tokyo location if geolocation fails
+            // 위치 정보를 허용하지 않는 경우 교토로 설정
+            console.log('Using Kyoto as default location due to geolocation error');
           },
           {
             enableHighAccuracy: true,
@@ -172,6 +174,8 @@ const { isLoaded, loadError } = useLoadScript({
             maximumAge: 0 // Always get fresh location
           }
         );
+      } else {
+        console.log('Geolocation not supported, using Kyoto as default');
       }
     };
 
@@ -409,7 +413,7 @@ const { isLoaded, loadError } = useLoadScript({
   const clearSearch = () => {
     setSearchQuery('');
     setSearchResults([]);
-    setMapCenter({ lat: 35.6762, lng: 139.6503 });
+    setMapCenter({ lat: 35.0116, lng: 135.7681 }); // 교토로 변경
     setMapZoom(12);
   };
 
@@ -483,18 +487,27 @@ const { isLoaded, loadError } = useLoadScript({
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
+          console.log('Current location updated:', latitude, longitude);
           setMapCenter({ lat: latitude, lng: longitude });
           setMapZoom(14);
         },
         (error) => {
           console.log('Geolocation error:', error);
+          // 위치 정보를 허용하지 않는 경우 교토로 이동
+          setMapCenter({ lat: 35.0116, lng: 135.7681 });
+          setMapZoom(12);
         },
         {
           enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 300000
+          timeout: 15000,
+          maximumAge: 0
         }
       );
+    } else {
+      console.log('Geolocation not supported');
+      // 교토로 이동
+      setMapCenter({ lat: 35.0116, lng: 135.7681 });
+      setMapZoom(12);
     }
   };
 
