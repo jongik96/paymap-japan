@@ -135,7 +135,6 @@ async function getPopularRestaurants(): Promise<NextResponse> {
 async function getUserActivity(): Promise<NextResponse> {
   try {
     // Get total counts from Redis
-    const restaurantKeys = await redis.keys('restaurant:*');
     const reviewKeys = await redis.keys('reviews:*');
     
     let totalReviews = 0;

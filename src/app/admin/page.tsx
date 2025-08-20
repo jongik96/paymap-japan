@@ -1,31 +1,24 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { 
   Shield, 
   BarChart3, 
   Users, 
   CreditCard, 
   TrendingUp, 
-  Settings,
   Download,
-  RefreshCw,
-  Globe,
-  Moon,
-  Sun
+  RefreshCw
 } from 'lucide-react';
 import Link from 'next/link';
 import PaymentMethodStats from '@/components/PaymentMethodStats';
 import PopularRestaurants from '@/components/PopularRestaurants';
 import UserActivityDashboard from '@/components/UserActivityDashboard';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
+
 import LanguageToggle from '@/components/LanguageToggle';
 import ThemeToggle from '@/components/ThemeToggle';
 
 export default function AdminPage() {
-  const { t } = useLanguage();
-  const { theme } = useTheme();
   const [activeTab, setActiveTab] = useState<'overview' | 'payments' | 'restaurants' | 'activity'>('overview');
   const [isLoading, setIsLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
@@ -141,7 +134,7 @@ export default function AdminPage() {
                 return (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id as any)}
+                                         onClick={() => setActiveTab(tab.id as 'overview' | 'payments' | 'restaurants' | 'activity')}
                     className={`flex items-center space-x-2 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                       activeTab === tab.id
                         ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
@@ -163,7 +156,7 @@ export default function AdminPage() {
             <div className="space-y-8">
               {/* Overview Stats */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {overviewStats.map((stat, index) => (
+                                 {overviewStats.map((stat) => (
                   <div
                     key={stat.label}
                     className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6"
