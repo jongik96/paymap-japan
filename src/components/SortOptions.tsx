@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowUpDown, Star, MessageCircle, MapPin, Alphabetical } from 'lucide-react';
+import { ArrowUpDown, Star, MessageCircle, MapPin, Type } from 'lucide-react';
 
 export type SortOption = 'rating' | 'reviewCount' | 'distance' | 'name' | 'newest';
 
@@ -16,7 +16,7 @@ const sortOptions = [
   { value: 'rating', label: 'Rating', icon: Star },
   { value: 'reviewCount', label: 'Reviews', icon: MessageCircle },
   { value: 'distance', label: 'Distance', icon: MapPin },
-  { value: 'name', label: 'Name', icon: Alphabetical },
+          { value: 'name', label: 'Name', icon: Type },
   { value: 'newest', label: 'Newest', icon: ArrowUpDown },
 ] as const;
 
