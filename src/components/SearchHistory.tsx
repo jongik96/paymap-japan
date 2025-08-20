@@ -28,11 +28,11 @@ export default function SearchHistory({
     if (isOpen) {
       const saved = localStorage.getItem('paymap_search_history');
       if (saved) {
-        try {
-          setSearchHistory(JSON.parse(saved));
-        } catch (error) {
-          console.error('Failed to parse search history:', error);
-        }
+          try {
+    setSearchHistory(JSON.parse(saved));
+  } catch {
+    console.error('Failed to parse search history');
+  }
       }
     }
   }, [isOpen]);
@@ -174,11 +174,11 @@ export const addSearchToHistory = (query: string, location?: { lat: number; lng:
   let history: SearchHistoryItem[] = [];
   
   if (saved) {
-    try {
-      history = JSON.parse(saved);
-    } catch (error) {
-      console.error('Failed to parse search history:', error);
-    }
+      try {
+    history = JSON.parse(saved);
+  } catch {
+    console.error('Failed to parse search history');
+  }
   }
 
   const newItem: SearchHistoryItem = {

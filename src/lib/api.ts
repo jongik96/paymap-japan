@@ -78,13 +78,13 @@ export const reviewsApi = {
   },
 
   // Update helpful count
-  async updateHelpfulCount(_reviewId: string, _restaurantId: string, _increment: boolean): Promise<boolean> {
+  async updateHelpfulCount(): Promise<boolean> {
     try {
       // This would need a new API endpoint for updating helpful count
       // For now, we'll return true as a placeholder
       return true;
-    } catch (error) {
-      console.error('Error updating helpful count:', error);
+    } catch {
+      console.error('Error updating helpful count');
       return false;
     }
   }

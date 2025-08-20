@@ -40,7 +40,7 @@ export default function Favorites({
     }
   }, [isOpen]);
 
-  const addToFavorites = (restaurant: Restaurant, note?: string) => {
+  const addToFavoritesLocal = (restaurant: Restaurant, note?: string) => {
     const newFavorite: FavoriteItem = {
       id: Date.now().toString(),
       restaurant,
@@ -194,9 +194,9 @@ export default function Favorites({
                       <div className="flex items-center justify-between">
                         <div className="flex-1 min-w-0">
                           {favorite.note ? (
-                            <p className="text-xs text-gray-700 dark:text-gray-300 italic">
-                              "{favorite.note}"
-                            </p>
+                                                         <p className="text-xs text-gray-700 dark:text-gray-300 italic">
+                               &ldquo;{favorite.note}&rdquo;
+                             </p>
                           ) : (
                             <p className="text-xs text-gray-400 dark:text-gray-500">
                               No note added
@@ -270,11 +270,11 @@ export const addToFavorites = (restaurant: Restaurant, note?: string) => {
   let favorites: FavoriteItem[] = [];
   
   if (saved) {
-    try {
-      favorites = JSON.parse(saved);
-    } catch (error) {
-      console.error('Failed to parse favorites:', error);
-    }
+      try {
+    favorites = JSON.parse(saved);
+  } catch {
+    console.error('Failed to parse favorites');
+  }
   }
 
   const newFavorite: FavoriteItem = {

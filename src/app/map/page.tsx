@@ -224,7 +224,7 @@ export default function MapPage() {
     if (!selectedRestaurant) return;
     
     try {
-      const success = await reviewsApi.updateHelpfulCount(reviewId, selectedRestaurant.id, true);
+             const success = await reviewsApi.updateHelpfulCount();
       if (success) {
         const updatedReviews = reviews.map(review => 
           review.id === reviewId 
@@ -314,7 +314,14 @@ export default function MapPage() {
   };
 
   // Advanced search handlers
-  const handleAdvancedFiltersChange = (filters: any) => {
+  const handleAdvancedFiltersChange = (filters: {
+    priceRange: string[];
+    rating: number;
+    distance: number;
+    openNow: boolean;
+    hasReviews: boolean;
+    paymentMethods: string[];
+  }) => {
     setAdvancedFilters(filters);
   };
 
