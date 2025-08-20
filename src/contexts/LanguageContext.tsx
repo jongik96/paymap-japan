@@ -131,6 +131,27 @@ const translations = {
     'common.darkMode': 'Dark Mode',
     'common.lightMode': 'Light Mode',
     'common.system': 'System',
+    
+    // Main page
+    'paymentMethodReviewService': 'Payment Method Review Service',
+    'discoverPaymentMethods': 'Discover Payment Methods at Japanese Restaurants',
+    'heroDescription': 'Find restaurants on Google Maps, check available payment methods, and share your experiences with others',
+    'viewMap': 'View Map',
+    'writeReview': 'Write Review',
+    'mapBasedSearch': 'Map-Based Search',
+    'mapBasedSearchDesc': 'Easily find restaurants in your desired area and check their locations on Google Maps',
+    'paymentMethodInfo': 'Payment Method Info',
+    'paymentMethodInfoDesc': 'Check available payment methods at each restaurant at a glance',
+    'realTimeReviews': 'Real-time Reviews',
+    'realTimeReviewsDesc': 'Leave anonymous reviews about payment methods and share them with others',
+    'howToUse': 'How to Use',
+    'findRestaurants': 'Find Restaurants',
+    'findRestaurantsDesc': 'Browse the map to find restaurants in your desired area',
+    'clickMarker': 'Click Marker',
+    'clickMarkerDesc': 'Click on restaurant markers to view detailed information',
+    'checkPayment': 'Check Payment',
+    'checkPaymentDesc': 'View available payment methods and other people\'s reviews',
+    'writeReviewDesc': 'Share your experience by writing a review',
   },
   ja: {
     // Header
@@ -249,6 +270,27 @@ const translations = {
     'common.darkMode': 'ダークモード',
     'common.lightMode': 'ライトモード',
     'common.system': 'システム',
+    
+    // Main page
+    'paymentMethodReviewService': '決済方法レビューサービス',
+    'discoverPaymentMethods': '日本のレストランの決済方法を発見しよう',
+    'heroDescription': 'Googleマップでレストランを見つけ、利用可能な決済方法を確認し、他の人と経験を共有しましょう',
+    'viewMap': '地図を見る',
+    'writeReview': 'レビューを書く',
+    'mapBasedSearch': '地図ベース検索',
+    'mapBasedSearchDesc': '希望するエリアのレストランを簡単に見つけ、Googleマップで場所を確認できます',
+    'paymentMethodInfo': '決済方法情報',
+    'paymentMethodInfoDesc': '各レストランで利用可能な決済方法を一目で確認できます',
+    'realTimeReviews': 'リアルタイムレビュー',
+    'realTimeReviewsDesc': '決済方法について匿名レビューを残し、他の人と共有しましょう',
+    'howToUse': '使い方',
+    'findRestaurants': 'レストランを見つける',
+    'findRestaurantsDesc': '地図を閲覧して、希望するエリアのレストランを見つけましょう',
+    'clickMarker': 'マーカーをクリック',
+    'clickMarkerDesc': 'レストランマーカーをクリックして詳細情報を確認しましょう',
+    'checkPayment': '決済方法確認',
+    'checkPaymentDesc': '利用可能な決済方法と他の人のレビューを確認しましょう',
+    'writeReviewDesc': 'レビューを書いて経験を共有しましょう',
   },
   ko: {
     // Header
@@ -367,6 +409,27 @@ const translations = {
     'common.darkMode': '다크 모드',
     'common.lightMode': '라이트 모드',
     'common.system': '시스템',
+    
+    // Main page
+    'paymentMethodReviewService': '결제 수단 리뷰 서비스',
+    'discoverPaymentMethods': '일본 레스토랑의 결제 수단을 발견하세요',
+    'heroDescription': 'Google 지도에서 레스토랑을 찾고, 사용 가능한 결제 수단을 확인하고, 다른 사람들과 경험을 공유하세요',
+    'viewMap': '지도 보기',
+    'writeReview': '리뷰 작성',
+    'mapBasedSearch': '지도 기반 검색',
+    'mapBasedSearchDesc': '원하는 지역의 레스토랑을 쉽게 찾고 Google 지도에서 위치를 확인하세요',
+    'paymentMethodInfo': '결제 수단 정보',
+    'paymentMethodInfoDesc': '각 레스토랑에서 사용 가능한 결제 수단을 한눈에 확인하세요',
+    'realTimeReviews': '실시간 리뷰',
+    'realTimeReviewsDesc': '결제 수단에 대한 익명 리뷰를 남기고 다른 사람들과 공유하세요',
+    'howToUse': '사용 방법',
+    'findRestaurants': '레스토랑 찾기',
+    'findRestaurantsDesc': '지도를 탐색하여 원하는 지역의 레스토랑을 찾으세요',
+    'clickMarker': '마커 클릭',
+    'clickMarkerDesc': '레스토랑 마커를 클릭하여 상세 정보를 확인하세요',
+    'checkPayment': '결제 수단 확인',
+    'checkPaymentDesc': '사용 가능한 결제 수단과 다른 사람들의 리뷰를 확인하세요',
+    'writeReviewDesc': '리뷰를 작성하여 경험을 공유하세요',
   }
 };
 
