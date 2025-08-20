@@ -1,0 +1,5 @@
+[33m7b9b785[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m fix: Remove PWA manifest and icon references to fix 404 errors
+[33m2bbffe1[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mexpand[m[33m)[m feat: Add dark mode support and UI improvements - Theme context and toggle component - Dark mode styles for MapPage - Enhanced Tailwind CSS configuration - Smooth animations and transitions
+[33m678e380[m seo update
+[33m27796a0[m frontend redish connect
+[33m3bb0b27[m redis connect
