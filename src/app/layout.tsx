@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     siteName: "PayMap Japan",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/og-image-simple.jpg",
         width: 1200,
         height: 630,
         alt: "PayMap Japan - Payment Method Review Service",
