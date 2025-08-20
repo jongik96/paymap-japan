@@ -9,7 +9,7 @@ import { reviewsApi, type Review, type Restaurant } from '@/lib/api';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import AdvancedFilters from '@/components/AdvancedFilters';
-import SortOptions, { type SortOption } from '@/components/SortOptions';
+// import SortOptions, { type SortOption } from '@/components/SortOptions'; // Hidden
 import SearchHistory from '@/components/SearchHistory';
 import Favorites, { addToFavorites, isInFavorites } from '@/components/Favorites';
 import { addSearchToHistory } from '@/components/SearchHistory';
@@ -123,11 +123,11 @@ export default function MapPage() {
   
   // Advanced search states
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-  const [showSortOptions, setShowSortOptions] = useState(false);
+  // const [showSortOptions, setShowSortOptions] = useState(false); // Hidden
   const [showSearchHistory, setShowSearchHistory] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
-  const [currentSort, setCurrentSort] = useState<SortOption>('rating');
-  const [isAscending, setIsAscending] = useState(false);
+  // const [currentSort, setCurrentSort] = useState<SortOption>('rating'); // Hidden
+  // const [isAscending, setIsAscending] = useState(false); // Hidden
   
   // Advanced filter states
   const [advancedFilters, setAdvancedFilters] = useState({
@@ -417,13 +417,13 @@ const { isLoaded, loadError } = useLoadScript({
     });
   };
 
-  const handleSortChange = (sort: SortOption) => {
-    setCurrentSort(sort);
-  };
+  // const handleSortChange = (sort: SortOption) => { // Hidden
+  //   setCurrentSort(sort);
+  // };
 
-  const handleDirectionChange = (ascending: boolean) => {
-    setIsAscending(ascending);
-  };
+  // const handleDirectionChange = (ascending: boolean) => { // Hidden
+  //   setIsAscending(ascending);
+  // };
 
   const handleSearchHistorySelect = (query: string, location?: { lat: number; lng: number }) => {
     setSearchQuery(query);
@@ -596,14 +596,14 @@ const { isLoaded, loadError } = useLoadScript({
                  )}
                </button>
 
-               {/* Sort Options */}
-               <button
+               {/* Sort Options - Hidden */}
+               {/* <button
                  onClick={() => setShowSortOptions(!showSortOptions)}
                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
                >
                  <SortAsc className="h-4 w-4" />
                  <span>{t('filters.sort')}</span>
-               </button>
+               </button> */}
 
                {/* Search History */}
                <button
@@ -900,13 +900,13 @@ const { isLoaded, loadError } = useLoadScript({
            onClearAll={handleAdvancedFiltersClear}
          />
 
-         {/* Sort Options Modal */}
-         <SortOptions
+         {/* Sort Options Modal - Hidden */}
+         {/* <SortOptions
            currentSort={currentSort}
            onSortChange={handleSortChange}
            isAscending={isAscending}
            onDirectionChange={handleDirectionChange}
-         />
+         /> */}
 
          {/* Search History Modal */}
          <SearchHistory
