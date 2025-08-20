@@ -104,6 +104,7 @@ export default function MapPage() {
   const { t } = useLanguage();
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [currentRestaurantId, setCurrentRestaurantId] = useState<string>('');
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Restaurant[]>([]);
@@ -157,8 +158,11 @@ export default function MapPage() {
       });
 
       if (newReview) {
-        const updatedReviews = [newReview, ...reviews];
-        setReviews(updatedReviews);
+        // 현재 선택된 식당의 리뷰에만 새 리뷰 추가
+        if (newReview.restaurantId === currentRestaurantId) {
+          const updatedReviews = [newReview, ...reviews];
+          setReviews(updatedReviews);
+        }
         setShowReviewForm(false);
       }
     } catch (error) {
@@ -167,7 +171,13 @@ export default function MapPage() {
   };
 
   const handleMarkerClick = async (restaurant: Restaurant) => {
+    // 이전 식당과 다른 경우 리뷰 초기화
+    if (selectedRestaurant?.id !== restaurant.id) {
+      setReviews([]);
+    }
+    
     setSelectedRestaurant(restaurant);
+    setCurrentRestaurantId(restaurant.id);
     
     try {
       // Load reviews for this restaurant from API
@@ -732,9 +742,9 @@ export default function MapPage() {
                   </button>
                 </div>
 
-                {reviews.length > 0 ? (
+                {reviews.filter(review => review.restaurantId === currentRestaurantId).length > 0 ? (
                   <div className="space-y-3">
-                    {reviews.map((review) => (
+                    {reviews.filter(review => review.restaurantId === currentRestaurantId).map((review) => (
                       <div key={review.id} className="border rounded-lg p-3 bg-gray-50">
                         <div className="flex justify-between items-start mb-2">
                           <div className="flex flex-wrap gap-1">
