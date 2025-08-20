@@ -126,6 +126,8 @@ export default function MapPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [anonymousId, setAnonymousId] = useState<string>('');
   
+  // 검색 결과 리스트 표시 상태
+  const [showSearchResultsList, setShowSearchResultsList] = useState(true);
   // Advanced search states
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   // const [showSortOptions, setShowSortOptions] = useState(false); // Hidden
@@ -421,6 +423,11 @@ export default function MapPage() {
 
           setSearchResults(restaurants);
           
+          // 검색 결과가 있을 때 리스트를 자동으로 표시
+          if (restaurants.length > 0) {
+            setShowSearchResultsList(true);
+          }
+          
           // Add to search history
           addSearchToHistory(query, { lat: mapCenter.lat, lng: mapCenter.lng });
           
@@ -451,6 +458,7 @@ export default function MapPage() {
   const clearSearch = () => {
     setSearchQuery('');
     setSearchResults([]);
+    setShowSearchResultsList(false); // 검색 결과 리스트도 함께 숨기기
     setMapCenter({ lat: 34.9857706, lng: 135.6977854 }); // 교토로 변경
     setMapZoom(12);
   };
@@ -891,6 +899,83 @@ export default function MapPage() {
               <Navigation className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </button>
           </div>
+          
+          {/* Search Results List Overlay */}
+          {searchResults.length > 0 && showSearchResultsList && (
+            <div className="absolute top-20 left-4 z-10 w-80 max-h-96 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+              {/* Header */}
+              <div className="flex items-center justify-between p-3 bg-blue-600 text-white">
+                <h3 className="font-semibold text-sm">
+                  🔍 검색 결과 ({searchResults.length}개)
+                </h3>
+                <button
+                  onClick={() => setShowSearchResultsList(false)}
+                  className="text-white hover:text-gray-200 transition-colors"
+                  title="리스트 숨기기"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              
+              {/* Results List */}
+              <div className="max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                {searchResults.map((restaurant, index) => (
+                  <div
+                    key={restaurant.id}
+                    className="p-3 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors last:border-b-0"
+                    onClick={() => handleMarkerClick(restaurant)}
+                  >
+                    {/* Restaurant Name & Category */}
+                    <div className="flex items-start justify-between mb-2">
+                      <h4 className="font-medium text-gray-900 dark:text-white text-sm leading-tight flex-1 mr-2">
+                        {restaurant.name}
+                      </h4>
+                      <span className="text-xs text-gray-500 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded flex-shrink-0">
+                        식당
+                      </span>
+                    </div>
+                    
+                    {/* City */}
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
+                      📍 {restaurant.address.split(',').slice(-2).join(', ')}
+                    </p>
+                    
+                    {/* Payment Methods */}
+                    <div className="flex flex-wrap gap-1 mb-2">
+                      {restaurant.paymentMethods.map((method, idx) => (
+                        <span
+                          key={idx}
+                          className="text-xs px-2 py-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full"
+                        >
+                          {method}
+                        </span>
+                      ))}
+                    </div>
+                    
+                    {/* Rating */}
+                    <div className="flex items-center">
+                      <Star className="h-3 w-3 text-yellow-400 fill-current mr-1" />
+                      <span className="text-xs text-gray-600 dark:text-gray-400">
+                        {restaurant.rating > 0 ? restaurant.rating : '평점 없음'}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Show Search Results Button (when hidden) */}
+          {searchResults.length > 0 && !showSearchResultsList && (
+            <button
+              onClick={() => setShowSearchResultsList(true)}
+              className="absolute top-20 left-4 z-10 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg shadow-lg transition-colors flex items-center space-x-2"
+              title="검색 결과 보기"
+            >
+              <Search className="h-4 w-4" />
+              <span className="text-sm font-medium">검색 결과 보기 ({searchResults.length})</span>
+            </button>
+          )}
           
           <GoogleMap
             key={`${mapCenter.lat}-${mapCenter.lng}-${mapZoom}`}
