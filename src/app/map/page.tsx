@@ -5,29 +5,11 @@ import { MapPin, CreditCard, Star, X, MessageCircle, Search, Loader2, Filter, Us
 import Link from 'next/link';
 import ReviewForm from '@/components/ReviewForm';
 import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api';
+import { reviewsApi, restaurantsApi, type Review, type Restaurant } from '@/lib/api';
 
-interface Restaurant {
-  id: string;
-  name: string;
-  address: string;
-  lat: number;
-  lng: number;
-  paymentMethods: string[];
-  rating: number;
-  reviewCount: number;
+// Extend Restaurant interface to include placeId for Google Places
+interface ExtendedRestaurant extends Restaurant {
   placeId?: string;
-}
-
-interface Review {
-  id: string;
-  restaurantId: string;
-  restaurantName: string;
-  paymentMethods: string[];
-  comment: string;
-  rating: number;
-  createdAt: string;
-  anonymousId: string;
-  helpfulCount: number;
 }
 
 const sampleRestaurants: Restaurant[] = [
@@ -103,23 +85,13 @@ const getAnonymousId = () => {
   return anonymousId;
 };
 
-// Load reviews from localStorage
-const loadReviews = (): Review[] => {
+// Load reviews from API
+const loadReviews = async (restaurantId: string): Promise<Review[]> => {
   try {
-    const savedReviews = localStorage.getItem('paymap_reviews');
-    return savedReviews ? JSON.parse(savedReviews) : [];
+    return await reviewsApi.getReviews(restaurantId);
   } catch (error) {
     console.error('Failed to load reviews:', error);
     return [];
-  }
-};
-
-// Save reviews to localStorage
-const saveReviews = (reviews: Review[]) => {
-  try {
-    localStorage.setItem('paymap_reviews', JSON.stringify(reviews));
-  } catch (error) {
-    console.error('Failed to save reviews:', error);
   }
 };
 
@@ -141,43 +113,62 @@ export default function MapPage() {
     libraries: ['places'],
   });
 
-  // Initialize anonymous ID and load reviews
+  // Initialize anonymous ID
   useEffect(() => {
     const id = getAnonymousId();
     setAnonymousId(id);
-    
-    const savedReviews = loadReviews();
-    setReviews(savedReviews);
   }, []);
 
-  const handleReviewSubmit = (data: { paymentMethods: string[]; comment: string; rating: number }) => {
+  const handleReviewSubmit = async (data: { paymentMethods: string[]; comment: string; rating: number }) => {
     if (!selectedRestaurant) return;
 
-    const newReview: Review = {
-      id: Date.now().toString(),
-      restaurantId: selectedRestaurant.id,
-      restaurantName: selectedRestaurant.name,
-      paymentMethods: data.paymentMethods,
-      comment: data.comment,
-      rating: data.rating,
-      createdAt: new Date().toISOString().split('T')[0],
-      anonymousId: anonymousId,
-      helpfulCount: 0
-    };
-    
-    const updatedReviews = [newReview, ...reviews];
-    setReviews(updatedReviews);
-    saveReviews(updatedReviews);
-    setShowReviewForm(false);
+    try {
+      const newReview = await reviewsApi.createReview({
+        restaurantId: selectedRestaurant.id,
+        restaurantName: selectedRestaurant.name,
+        paymentMethods: data.paymentMethods,
+        comment: data.comment,
+        rating: data.rating,
+        anonymousId: anonymousId
+      });
+
+      if (newReview) {
+        const updatedReviews = [newReview, ...reviews];
+        setReviews(updatedReviews);
+        setShowReviewForm(false);
+      }
+    } catch (error) {
+      console.error('Failed to submit review:', error);
+    }
   };
 
-  const handleMarkerClick = (restaurant: Restaurant) => {
+  const handleMarkerClick = async (restaurant: Restaurant) => {
     setSelectedRestaurant(restaurant);
     
-    // Load reviews for this restaurant
-    const restaurantReviews = reviews.filter(review => review.restaurantId === restaurant.id);
-    if (restaurantReviews.length === 0) {
-      // Show sample review if no real reviews exist
+    try {
+      // Load reviews for this restaurant from API
+      const restaurantReviews = await loadReviews(restaurant.id);
+      if (restaurantReviews.length === 0) {
+        // Show sample review if no real reviews exist
+        setReviews([
+          {
+            id: 'sample-1',
+            restaurantId: restaurant.id,
+            restaurantName: restaurant.name,
+            paymentMethods: ['Credit Card'],
+            comment: 'Sample review - Add your own review to share actual payment options!',
+            rating: 5,
+            createdAt: '2024-01-15',
+            anonymousId: 'SampleUser',
+            helpfulCount: 0
+          }
+        ]);
+      } else {
+        setReviews(restaurantReviews);
+      }
+    } catch (error) {
+      console.error('Failed to load reviews:', error);
+      // Show sample review on error
       setReviews([
         {
           id: 'sample-1',
@@ -191,25 +182,39 @@ export default function MapPage() {
           helpfulCount: 0
         }
       ]);
-    } else {
-      setReviews(restaurantReviews);
     }
   };
 
-  const handleReviewDelete = (reviewId: string) => {
-    const updatedReviews = reviews.filter(review => review.id !== reviewId);
-    setReviews(updatedReviews);
-    saveReviews(updatedReviews);
+  const handleReviewDelete = async (reviewId: string) => {
+    if (!selectedRestaurant) return;
+    
+    try {
+      const success = await reviewsApi.deleteReview(reviewId, selectedRestaurant.id, anonymousId);
+      if (success) {
+        const updatedReviews = reviews.filter(review => review.id !== reviewId);
+        setReviews(updatedReviews);
+      }
+    } catch (error) {
+      console.error('Failed to delete review:', error);
+    }
   };
 
-  const handleHelpfulClick = (reviewId: string) => {
-    const updatedReviews = reviews.map(review => 
-      review.id === reviewId 
-        ? { ...review, helpfulCount: review.helpfulCount + 1 }
-        : review
-    );
-    setReviews(updatedReviews);
-    saveReviews(updatedReviews);
+  const handleHelpfulClick = async (reviewId: string) => {
+    if (!selectedRestaurant) return;
+    
+    try {
+      const success = await reviewsApi.updateHelpfulCount(reviewId, selectedRestaurant.id, true);
+      if (success) {
+        const updatedReviews = reviews.map(review => 
+          review.id === reviewId 
+            ? { ...review, helpfulCount: review.helpfulCount + 1 }
+            : review
+        );
+        setReviews(updatedReviews);
+      }
+    } catch (error) {
+      console.error('Failed to update helpful count:', error);
+    }
   };
 
   const searchRestaurants = useCallback(async (query: string) => {

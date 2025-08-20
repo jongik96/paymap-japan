@@ -6,6 +6,18 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
+interface Review {
+  id: string;
+  restaurantId: string;
+  restaurantName: string;
+  paymentMethods: string[];
+  comment: string;
+  rating: number;
+  createdAt: string;
+  anonymousId: string;
+  helpfulCount: number;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -19,18 +31,21 @@ export async function GET(request: NextRequest) {
     const reviews = await redis.hgetall(`restaurant:${restaurantId}:reviews`);
     
     // Convert to array format
-    const reviewsArray = Object.values(reviews || {}).map((review: any) => ({
-      ...review,
-      id: review.id,
-      restaurantId: review.restaurantId,
-      restaurantName: review.restaurantName,
-      paymentMethods: review.paymentMethods,
-      comment: review.comment,
-      rating: review.rating,
-      createdAt: review.createdAt,
-      anonymousId: review.anonymousId,
-      helpfulCount: review.helpfulCount || 0
-    })) as any[];
+    const reviewsArray = Object.values(reviews || {}).map((review: unknown) => {
+      const typedReview = review as Review;
+      return {
+        ...typedReview,
+        id: typedReview.id,
+        restaurantId: typedReview.restaurantId,
+        restaurantName: typedReview.restaurantName,
+        paymentMethods: typedReview.paymentMethods,
+        comment: typedReview.comment,
+        rating: typedReview.rating,
+        createdAt: typedReview.createdAt,
+        anonymousId: typedReview.anonymousId,
+        helpfulCount: typedReview.helpfulCount || 0
+      };
+    });
 
     return NextResponse.json({ reviews: reviewsArray });
   } catch (error) {
@@ -50,7 +65,7 @@ export async function POST(request: NextRequest) {
     }
 
     const reviewId = Date.now().toString();
-    const review = {
+    const review: Review = {
       id: reviewId,
       restaurantId,
       restaurantName,
@@ -87,7 +102,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Get review to check ownership
-    const review = await redis.hget(`restaurant:${restaurantId}:reviews`, reviewId);
+    const review = await redis.hget(`restaurant:${restaurantId}:reviews`, reviewId) as Review | null;
     
     if (!review) {
       return NextResponse.json({ error: 'Review not found' }, { status: 404 });
