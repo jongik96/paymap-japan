@@ -35,6 +35,12 @@ interface UserActivityDashboardProps {
   data?: {
     metrics: ActivityMetric[];
     timeSeries: TimeSeriesData[];
+    recentActivities?: Array<{
+      time: string;
+      user: string;
+      action: string;
+      target: string;
+    }>;
   };
   isLoading?: boolean;
 }
@@ -45,7 +51,16 @@ export default function UserActivityDashboard({
 }: UserActivityDashboardProps) {
   const { t } = useLanguage();
   const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d'>('24h');
-  const [actualData, setActualData] = useState<{ metrics: ActivityMetric[]; timeSeries: TimeSeriesData[] }>({ metrics: [], timeSeries: [] });
+  const [actualData, setActualData] = useState<{ 
+    metrics: ActivityMetric[]; 
+    timeSeries: TimeSeriesData[]; 
+    recentActivities?: Array<{
+      time: string;
+      user: string;
+      action: string;
+      target: string;
+    }>;
+  }>({ metrics: [], timeSeries: [] });
 
   // 실제 데이터 가져오기
   useEffect(() => {
@@ -66,7 +81,11 @@ export default function UserActivityDashboard({
     fetchData();
   }, []);
 
-  const displayData = actualData.metrics.length > 0 ? actualData : { metrics: [], timeSeries: [] };
+  const displayData = actualData.metrics.length > 0 ? actualData : { 
+    metrics: [], 
+    timeSeries: [], 
+    recentActivities: [] 
+  };
 
   const getColorClasses = (color: string) => {
     const colors = {
