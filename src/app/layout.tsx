@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "PayMap Japan - Payment Method Review Service",
   description: "Find restaurants in Japan and check available payment methods. Share your payment experiences anonymously. Discover which restaurants accept Suica, PayPay, credit cards, and more payment options.",
-  keywords: "Japan, restaurants, payment methods, Google Maps, reviews, Suica, PayPay, LINE Pay, credit card, cash, Tokyo, Osaka, Kyoto, dining, food, payment options, restaurant reviews, anonymous reviews",
+  keywords: "Japan, restaurants, payment methods, Google Maps, reviews, Suica, PayPay, LINE Pay, credit card, cash, Osaka, Kyoto, dining, food, payment options, restaurant reviews, anonymous reviews",
   authors: [{ name: "PayMap Japan Team" }],
   creator: "PayMap Japan",
   publisher: "PayMap Japan",

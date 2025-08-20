@@ -21,7 +21,7 @@ const translations = {
     'header.anonymous': 'Anonymous',
     
     // Search
-    'search.placeholder': 'Search for restaurants in Tokyo...',
+    'search.placeholder': 'Search for restaurants in Japan...',
     'search.button': 'Search',
     'search.searching': 'Searching...',
     'search.clear': 'Clear',
@@ -173,7 +173,7 @@ const translations = {
     'header.anonymous': '匿名',
     
     // Search
-    'search.placeholder': '東京のレストランを検索...',
+    'search.placeholder': 'Search for restaurants in Japan...',
     'search.button': '検索',
     'search.searching': '検索中...',
     'search.clear': 'クリア',
@@ -325,7 +325,7 @@ const translations = {
     'header.anonymous': '익명',
     
     // Search
-    'search.placeholder': '도쿄의 레스토랑을 검색...',
+    'search.placeholder': 'Search for restaurants in Japan...',
     'search.button': '검색',
     'search.searching': '검색 중...',
     'search.clear': '지우기',
