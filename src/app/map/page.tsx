@@ -22,8 +22,8 @@ const sampleRestaurants: Restaurant[] = [
     id: '1',
     name: 'Ramen Yamamoto',
     address: '2-1-1 Gion, Higashiyama-ku, Kyoto',
-    lat: 35.0116,
-    lng: 135.7681,
+    lat: 34.9857706,
+    lng: 135.6977854,
     paymentMethods: ['Cash', 'Credit Card', 'Suica', 'PayPay'],
     rating: 4.5,
     reviewCount: 23
@@ -32,8 +32,8 @@ const sampleRestaurants: Restaurant[] = [
     id: '2',
     name: 'Sushi Sato',
     address: '5-2-1 Pontocho, Nakagyo-ku, Kyoto',
-    lat: 35.0116,
-    lng: 135.7681,
+    lat: 34.9857706,
+    lng: 135.6977854,
     paymentMethods: ['Cash', 'Credit Card', 'Suica'],
     rating: 4.8,
     reviewCount: 45
@@ -42,8 +42,8 @@ const sampleRestaurants: Restaurant[] = [
     id: '3',
     name: 'Udon Kinokuni',
     address: '3-1-1 Arashiyama, Ukyo-ku, Kyoto',
-    lat: 35.0116,
-    lng: 135.7681,
+    lat: 34.9857706,
+    lng: 135.6977854,
     paymentMethods: ['Cash', 'Credit Card', 'PayPay', 'LINE Pay'],
     rating: 4.2,
     reviewCount: 18
@@ -119,7 +119,7 @@ export default function MapPage() {
   const [searchResults, setSearchResults] = useState<Restaurant[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   // 기본 위치를 교토로 설정 (위치 정보를 허용하지 않는 경우)
-  const [mapCenter, setMapCenter] = useState({ lat: 35.0116, lng: 135.7681 }); // 교토
+  const [mapCenter, setMapCenter] = useState({ lat: 34.9857706, lng: 135.6977854 }); // 교토
   const [mapZoom, setMapZoom] = useState(12);
   const [locationStatus, setLocationStatus] = useState<'detecting' | 'success' | 'error' | 'default'>('detecting');
   const [selectedPaymentMethods, setSelectedPaymentMethods] = useState<string[]>([]);
@@ -164,9 +164,9 @@ export default function MapPage() {
             console.log('✅ Current location detected:', latitude, longitude);
             
             // Check if the detected location is actually in Kyoto area
-            // Kyoto coordinates: approximately 35.0116, 135.7681
-            const kyotoLat = 35.0116;
-            const kyotoLng = 135.7681;
+            // Kyoto coordinates: approximately 34.9857706, 135.6977854
+            const kyotoLat = 34.9857706;
+            const kyotoLng = 135.6977854;
             const distanceThreshold = 0.1; // About 11km radius
             
             const latDiff = Math.abs(latitude - kyotoLat);
@@ -451,7 +451,7 @@ export default function MapPage() {
   const clearSearch = () => {
     setSearchQuery('');
     setSearchResults([]);
-    setMapCenter({ lat: 35.0116, lng: 135.7681 }); // 교토로 변경
+    setMapCenter({ lat: 34.9857706, lng: 135.6977854 }); // 교토로 변경
     setMapZoom(12);
   };
 
@@ -529,8 +529,8 @@ export default function MapPage() {
           console.log('✅ Current location updated:', latitude, longitude);
           
           // Check if the detected location is actually in Kyoto area
-          const kyotoLat = 35.0116;
-          const kyotoLng = 135.7681;
+          const kyotoLat = 34.9857706;
+          const kyotoLng = 135.6977854;
           const distanceThreshold = 0.1; // About 11km radius
           
           const latDiff = Math.abs(latitude - kyotoLat);
@@ -554,7 +554,7 @@ export default function MapPage() {
           console.log('❌ Geolocation error:', error);
           console.log('📍 Moving to Kyoto due to geolocation error');
           // 위치 정보를 허용하지 않는 경우 교토로 이동
-          setMapCenter({ lat: 35.0116, lng: 135.7681 });
+          setMapCenter({ lat: 34.9857706, lng: 135.6977854 });
           setMapZoom(12);
           setLocationStatus('error');
         },
@@ -568,7 +568,7 @@ export default function MapPage() {
       console.log('❌ Geolocation not supported');
       console.log('📍 Moving to Kyoto');
       // 교토로 이동
-      setMapCenter({ lat: 35.0116, lng: 135.7681 });
+      setMapCenter({ lat: 34.9857706, lng: 135.6977854 });
       setMapZoom(12);
       setLocationStatus('default');
     }
