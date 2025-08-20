@@ -39,9 +39,6 @@ interface UserActivityDashboardProps {
   isLoading?: boolean;
 }
 
-
-];
-
 export default function UserActivityDashboard({ 
   data, 
   isLoading = false 
