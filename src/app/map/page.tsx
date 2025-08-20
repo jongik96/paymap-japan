@@ -923,7 +923,12 @@ export default function MapPage() {
                   <div
                     key={restaurant.id}
                     className="p-3 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors last:border-b-0"
-                    onClick={() => handleMarkerClick(restaurant)}
+                    onClick={() => {
+                      handleMarkerClick(restaurant);
+                      // 지도를 해당 가게 위치로 이동
+                      setMapCenter({ lat: restaurant.lat, lng: restaurant.lng });
+                      setMapZoom(16); // 가게 주변을 자세히 보기 위한 줌 레벨
+                    }}
                   >
                     {/* Restaurant Name & Category */}
                     <div className="flex items-start justify-between mb-2">
