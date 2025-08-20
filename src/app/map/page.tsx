@@ -153,24 +153,35 @@ const { isLoaded, loadError } = useLoadScript({
     setAnonymousId(id);
     
     // Get current location when page loads
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setMapCenter({ lat: latitude, lng: longitude });
-          setMapZoom(14); // Closer zoom for current location
-        },
-        (error) => {
-          console.log('Geolocation error:', error);
-          // Keep default Tokyo location if geolocation fails
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 300000 // 5 minutes
-        }
-      );
-    }
+    const getLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            console.log('Current location detected:', latitude, longitude);
+            setMapCenter({ lat: latitude, lng: longitude });
+            setMapZoom(14); // Closer zoom for current location
+          },
+          (error) => {
+            console.log('Geolocation error:', error);
+            // Keep default Tokyo location if geolocation fails
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0 // Always get fresh location
+          }
+        );
+      }
+    };
+
+    // Try to get location immediately
+    getLocation();
+    
+    // Also try after a short delay in case of permission issues
+    const timer = setTimeout(getLocation, 1000);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const handleReviewSubmit = async (data: { paymentMethods: string[]; comment: string; rating: number }) => {
@@ -729,14 +740,35 @@ const { isLoaded, loadError } = useLoadScript({
       <div className="flex h-[calc(100vh-200px)]">
         {/* Map Container */}
         <div className="flex-1 relative">
-          {/* Current Location Button */}
-          <button
-            onClick={getCurrentLocation}
-            className="absolute top-4 right-4 z-10 bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            title="현재 위치로 이동"
-          >
-            <Navigation className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-          </button>
+          {/* Map Controls */}
+          <div className="absolute top-4 right-4 z-10 flex flex-col space-y-2">
+            {/* Zoom Controls */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <button
+                onClick={() => setMapZoom(prev => Math.min(prev + 1, 20))}
+                className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-b border-gray-200 dark:border-gray-700"
+                title="확대"
+              >
+                <span className="text-lg font-bold text-gray-600 dark:text-gray-300">+</span>
+              </button>
+              <button
+                onClick={() => setMapZoom(prev => Math.max(prev - 1, 3))}
+                className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                title="축소"
+              >
+                <span className="text-lg font-bold text-gray-600 dark:text-gray-300">−</span>
+              </button>
+            </div>
+            
+            {/* Current Location Button */}
+            <button
+              onClick={getCurrentLocation}
+              className="w-10 h-10 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center"
+              title="현재 위치로 이동"
+            >
+              <Navigation className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            </button>
+          </div>
           
           <GoogleMap
             mapContainerClassName="w-full h-full"
@@ -752,7 +784,15 @@ const { isLoaded, loadError } = useLoadScript({
                   elementType: 'labels',
                   stylers: [{ visibility: 'off' }]
                 }
-              ]
+              ],
+              // Hide default Google Maps controls to prevent overlap
+              disableDefaultUI: true,
+              zoomControl: false,
+              mapTypeControl: false,
+              scaleControl: false,
+              streetViewControl: false,
+              rotateControl: false,
+              fullscreenControl: false
             }}
           >
             {filteredRestaurants.map((restaurant) => (
