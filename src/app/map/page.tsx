@@ -400,15 +400,14 @@ export default function MapPage() {
       const service = new window.google.maps.places.PlacesService(document.createElement('div'));
       
       const request = {
-        query: query + ' restaurant',
-        location: new window.google.maps.LatLng(mapCenter.lat, mapCenter.lng),
-        radius: 5000,
+        query: query + ' restaurant Japan', // 일본 전체 지역 검색
+        // location과 radius 제거하여 일본 전체에서 검색
         type: 'restaurant'
       };
 
       service.textSearch(request, (results, status) => {
         if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
-          const restaurants: Restaurant[] = results.slice(0, 10).map((place, index) => ({
+          const restaurants: Restaurant[] = results.slice(0, 20).map((place, index) => ({ // 결과 수를 20개로 증가
             id: `search-${Date.now()}-${index}-${place.place_id}`,
             name: place.name || 'Unknown Restaurant',
             address: place.formatted_address || 'Address not available',
@@ -425,10 +424,11 @@ export default function MapPage() {
           // Add to search history
           addSearchToHistory(query, { lat: mapCenter.lat, lng: mapCenter.lng });
           
-          // Center map on first result
+          // 검색 결과가 있을 때만 지도 중심을 이동 (사용자가 원하는 경우)
           if (restaurants.length > 0) {
-            setMapCenter({ lat: restaurants[0].lat, lng: restaurants[0].lng });
-            setMapZoom(15);
+            // 첫 번째 결과로 지도 중심 이동 (선택사항)
+            // setMapCenter({ lat: restaurants[0].lat, lng: restaurants[0].lng });
+            // setMapZoom(15);
           }
         } else {
           setSearchResults([]);
@@ -654,45 +654,59 @@ export default function MapPage() {
       {/* Search and Filter Bar */}
       <div className="bg-white border-b px-4 py-3">
         <div className="max-w-7xl mx-auto space-y-3">
-          {/* Search Form */}
-          <form onSubmit={handleSearch} className="flex space-x-3">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                                 placeholder={t('search.placeholder')}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={isSearching || !searchQuery.trim()}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
-            >
-              {isSearching ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                                     <span>{t('search.searching')}</span>
-                 </>
-               ) : (
-                 <>
-                   <Search className="h-4 w-4" />
-                   <span>{t('search.button')}</span>
-                 </>
-               )}
-            </button>
-            {searchResults.length > 0 && (
+          {/* Search Bar */}
+          <div className="relative mb-4">
+            <form onSubmit={handleSearch} className="flex gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t('search.placeholder')}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
               <button
-                type="button"
-                onClick={clearSearch}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                type="submit"
+                disabled={isSearching}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
               >
-                {t('search.clear')}
+                {isSearching ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {t('search.searching')}
+                  </>
+                ) : (
+                  <>
+                    <Search className="h-4 w-4" />
+                    {t('search.button')}
+                  </>
+                )}
               </button>
-            )}
-          </form>
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={clearSearch}
+                  className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                >
+                  {t('search.clear')}
+                </button>
+              )}
+            </form>
+            
+            {/* 검색 안내 텍스트 */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
+              <p className="text-sm text-blue-800 flex items-start">
+                <span className="mr-2">💡</span>
+                <span>
+                  <strong>일본 전체 지역의 식당을 검색할 수 있습니다!</strong><br/>
+                  예시: "라멘", "스시", "오사카 음식점", "도쿄 카페", "교토 전통음식" 등<br/>
+                  검색 결과는 일본 전역에서 찾아집니다.
+                </span>
+              </p>
+            </div>
+          </div>
 
                      {/* Advanced Search Tools */}
            <div className="flex items-center justify-between">
@@ -791,22 +805,33 @@ export default function MapPage() {
           
           {/* Results Summary */}
           <div className="flex items-center justify-between text-sm text-gray-600">
-            <div>
-              {searchResults.length > 0 && (
-                <span>Found {searchResults.length} restaurant(s) • </span>
+            <div className="flex items-center space-x-3">
+              {searchResults.length > 0 ? (
+                <div className="flex items-center space-x-2">
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
+                    🔍 검색 결과: {searchResults.length}개 식당
+                  </span>
+                  <span className="text-gray-500">•</span>
+                  <span>일본 전체 지역에서 검색됨</span>
+                </div>
+              ) : (
+                <span>기본 식당 {filteredRestaurants.length}개 표시 중</span>
               )}
-              <span>Showing {filteredRestaurants.length} restaurant(s)</span>
+              
               {selectedPaymentMethods.length > 0 && (
-                <span> with selected payment methods</span>
+                <>
+                  <span className="text-gray-500">•</span>
+                  <span>선택된 결제수단으로 필터링됨</span>
+                </>
               )}
             </div>
             
             {searchResults.length > 0 && (
               <button
                 onClick={clearSearch}
-                className="text-blue-600 hover:text-blue-700 underline"
+                className="text-blue-600 hover:text-blue-700 underline font-medium"
               >
-                Show original restaurants
+                기본 식당으로 돌아가기
               </button>
             )}
           </div>
