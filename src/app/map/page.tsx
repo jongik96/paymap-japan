@@ -7,11 +7,13 @@ import ReviewForm from '@/components/ReviewForm';
 import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api';
 import { reviewsApi, type Review, type Restaurant } from '@/lib/api';
 import ThemeToggle from '@/components/ThemeToggle';
+import LanguageToggle from '@/components/LanguageToggle';
 import AdvancedFilters from '@/components/AdvancedFilters';
 import SortOptions, { type SortOption } from '@/components/SortOptions';
 import SearchHistory from '@/components/SearchHistory';
 import Favorites, { addToFavorites, isInFavorites } from '@/components/Favorites';
 import { addSearchToHistory } from '@/components/SearchHistory';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 
 
@@ -99,6 +101,7 @@ const loadReviews = async (restaurantId: string): Promise<Review[]> => {
 };
 
 export default function MapPage() {
+  const { t } = useLanguage();
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [showReviewForm, setShowReviewForm] = useState(false);
@@ -423,19 +426,20 @@ export default function MapPage() {
               <MapPin className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">PayMap Japan</h1>
             </Link>
-            <div className="flex items-center space-x-4">
-              <ThemeToggle />
-              <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
-                <User className="h-4 w-4" />
-                <span>Anonymous: {anonymousId}</span>
-              </div>
-              <Link 
-                href="/" 
-                className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors"
-              >
-                Back to Home
-              </Link>
-            </div>
+                         <div className="flex items-center space-x-4">
+               <LanguageToggle />
+               <ThemeToggle />
+               <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+                 <User className="h-4 w-4" />
+                 <span>{t('header.anonymous')}: {anonymousId}</span>
+               </div>
+               <Link 
+                 href="/" 
+                 className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors"
+               >
+                 {t('header.backToHome')}
+               </Link>
+             </div>
           </div>
         </div>
       </header>
@@ -451,7 +455,7 @@ export default function MapPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for restaurants in Tokyo..."
+                                 placeholder={t('search.placeholder')}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
@@ -463,14 +467,14 @@ export default function MapPage() {
               {isSearching ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Searching...</span>
-                </>
-              ) : (
-                <>
-                  <Search className="h-4 w-4" />
-                  <span>Search</span>
-                </>
-              )}
+                                     <span>{t('search.searching')}</span>
+                 </>
+               ) : (
+                 <>
+                   <Search className="h-4 w-4" />
+                   <span>{t('search.button')}</span>
+                 </>
+               )}
             </button>
             {searchResults.length > 0 && (
               <button
@@ -478,7 +482,7 @@ export default function MapPage() {
                 onClick={clearSearch}
                 className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                Clear
+                {t('search.clear')}
               </button>
             )}
           </form>
@@ -492,7 +496,7 @@ export default function MapPage() {
                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
                >
                  <Filter className="h-4 w-4" />
-                 <span>Payment Methods</span>
+                 <span>{t('filters.paymentMethods')}</span>
                  {selectedPaymentMethods.length > 0 && (
                    <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
                      {selectedPaymentMethods.length}
@@ -506,7 +510,7 @@ export default function MapPage() {
                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
                >
                  <Filter className="h-4 w-4" />
-                 <span>Advanced Filters</span>
+                 <span>{t('filters.advanced')}</span>
                  {(advancedFilters.priceRange.length > 0 || advancedFilters.rating > 0 || advancedFilters.distance !== 10 || advancedFilters.openNow || advancedFilters.hasReviews) && (
                    <span className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
                      Active
@@ -520,7 +524,7 @@ export default function MapPage() {
                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
                >
                  <SortAsc className="h-4 w-4" />
-                 <span>Sort</span>
+                 <span>{t('filters.sort')}</span>
                </button>
 
                {/* Search History */}
@@ -529,7 +533,7 @@ export default function MapPage() {
                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
                >
                  <History className="h-4 w-4" />
-                 <span>History</span>
+                 <span>{t('filters.history')}</span>
                </button>
 
                {/* Favorites */}
@@ -538,7 +542,7 @@ export default function MapPage() {
                  className="flex items-center space-x-2 text-red-600 hover:text-red-700 transition-colors"
                >
                  <Heart className="h-4 w-4" />
-                 <span>Favorites</span>
+                 <span>{t('filters.favorites')}</span>
                </button>
              </div>
              
@@ -550,7 +554,7 @@ export default function MapPage() {
                  }}
                  className="text-sm text-blue-600 hover:text-blue-700 underline"
                >
-                 Clear All Filters
+                 {t('filters.clearAll')}
                </button>
              )}
            </div>
