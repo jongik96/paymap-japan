@@ -170,9 +170,14 @@ export default function UserActivityDashboard({
             className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className={`p-3 rounded-lg ${getColorClasses(metric.color)}`}>
-                {metric.icon}
-              </div>
+                           <div className={`p-3 rounded-lg ${getColorClasses(metric.color)}`}>
+               {metric.icon === 'Users' && <Users className="h-5 w-5" />}
+               {metric.icon === 'MessageCircle' && <MessageCircle className="h-5 w-5" />}
+               {metric.icon === 'Search' && <Search className="h-5 w-5" />}
+               {metric.icon === 'Heart' && <Heart className="h-5 w-5" />}
+               {metric.icon === 'Eye' && <Eye className="h-5 w-5" />}
+               {metric.icon === 'Clock' && <Clock className="h-5 w-5" />}
+             </div>
               <div className={`flex items-center space-x-1 text-sm ${getTrendColor(metric.trend)}`}>
                 {getTrendIcon(metric.trend)}
                 <span>{metric.change > 0 ? '+' : ''}{metric.change}%</span>
@@ -272,13 +277,7 @@ export default function UserActivityDashboard({
         </h4>
         
         <div className="space-y-3">
-          {[
-            { time: '2분 전', user: '익명사용자_1234', action: '새 리뷰 작성', target: 'Sushi Zanmai Ginza' },
-            { time: '5분 전', user: '익명사용자_5678', action: '즐겨찾기 추가', target: 'Ichiran Ramen Shibuya' },
-            { time: '8분 전', user: '익명사용자_9012', action: '레스토랑 검색', target: '도쿄 라멘' },
-            { time: '12분 전', user: '익명사용자_3456', action: '리뷰에 도움됨 표시', target: 'Tempura Tsunahachi' },
-            { time: '15분 전', user: '익명사용자_7890', action: '새 리뷰 작성', target: 'Kaikaya by the Sea' }
-          ].map((activity, index) => (
+                     {displayData.recentActivities ? displayData.recentActivities.map((activity, index) => (
             <div key={index} className="flex items-center space-x-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
               <div className="flex-1 min-w-0">
@@ -292,7 +291,12 @@ export default function UserActivityDashboard({
                 {activity.time}
               </div>
             </div>
-          ))}
+          )) : (
+            <div className="text-center text-gray-500 dark:text-gray-400 py-8">
+              <MessageCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
+              <p>최근 활동이 없습니다</p>
+            </div>
+          )}
         </div>
       </div>
 
