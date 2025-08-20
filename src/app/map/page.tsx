@@ -103,9 +103,14 @@ const loadReviews = async (restaurantId: string): Promise<Review[]> => {
 export default function MapPage() {
   const { t } = useLanguage();
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
-  const [reviews, setReviews] = useState<Review[]>([]);
   const [currentRestaurantId, setCurrentRestaurantId] = useState<string>('');
   const [restaurantReviews, setRestaurantReviews] = useState<{ [key: string]: Review[] }>({});
+  
+  // 현재 선택된 식당의 리뷰만 가져오는 computed value
+  const currentReviews = useMemo(() => {
+    if (!currentRestaurantId) return [];
+    return restaurantReviews[currentRestaurantId] || [];
+  }, [currentRestaurantId, restaurantReviews]);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Restaurant[]>([]);
@@ -134,10 +139,13 @@ export default function MapPage() {
     paymentMethods: [] as string[]
   });
 
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
-    libraries: ['places'],
-  });
+  // Google Maps libraries를 상수로 정의하여 경고 방지
+const GOOGLE_MAPS_LIBRARIES: ("places")[] = ['places'];
+
+const { isLoaded, loadError } = useLoadScript({
+  googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+  libraries: GOOGLE_MAPS_LIBRARIES,
+});
 
   // Initialize anonymous ID
   useEffect(() => {
@@ -160,10 +168,9 @@ export default function MapPage() {
 
       if (newReview) {
         // 새 리뷰를 현재 식당의 리뷰에 추가
-        const updatedReviews = [newReview, ...reviews];
-        setReviews(updatedReviews);
+        const updatedReviews = [newReview, ...currentReviews];
         
-        // 캐시도 업데이트
+        // 캐시 업데이트
         setRestaurantReviews(prev => ({
           ...prev,
           [currentRestaurantId]: updatedReviews
@@ -183,7 +190,6 @@ export default function MapPage() {
     try {
       // 이미 로드된 리뷰가 있는지 확인
       if (restaurantReviews[restaurant.id]) {
-        setReviews(restaurantReviews[restaurant.id]);
         return;
       }
       
@@ -210,9 +216,6 @@ export default function MapPage() {
         finalReviews = apiReviews;
       }
       
-      // 현재 식당의 리뷰만 설정
-      setReviews(finalReviews);
-      
       // 캐시에 저장
       setRestaurantReviews(prev => ({
         ...prev,
@@ -235,8 +238,6 @@ export default function MapPage() {
           helpfulCount: 0
         }
       ];
-      setReviews(errorReviews);
-      
       // 에러 시에도 캐시에 저장
       setRestaurantReviews(prev => ({
         ...prev,
@@ -251,10 +252,9 @@ export default function MapPage() {
     try {
       const success = await reviewsApi.deleteReview(reviewId, selectedRestaurant.id, anonymousId);
       if (success) {
-        const updatedReviews = reviews.filter(review => review.id !== reviewId);
-        setReviews(updatedReviews);
+        const updatedReviews = currentReviews.filter(review => review.id !== reviewId);
         
-        // 캐시도 업데이트
+        // 캐시 업데이트
         if (currentRestaurantId) {
           setRestaurantReviews(prev => ({
             ...prev,
@@ -273,14 +273,13 @@ export default function MapPage() {
     try {
              const success = await reviewsApi.updateHelpfulCount();
       if (success) {
-        const updatedReviews = reviews.map(review => 
+        const updatedReviews = currentReviews.map(review => 
           review.id === reviewId 
             ? { ...review, helpfulCount: review.helpfulCount + 1 }
             : review
         );
-        setReviews(updatedReviews);
         
-        // 캐시도 업데이트
+        // 캐시 업데이트
         if (currentRestaurantId) {
           setRestaurantReviews(prev => ({
             ...prev,
@@ -784,9 +783,9 @@ export default function MapPage() {
                   </button>
                 </div>
 
-                {reviews.filter(review => review.restaurantId === currentRestaurantId).length > 0 ? (
+                {currentReviews.length > 0 ? (
                   <div className="space-y-3">
-                    {reviews.filter(review => review.restaurantId === currentRestaurantId).map((review) => (
+                    {currentReviews.map((review) => (
                       <div key={review.id} className="border rounded-lg p-3 bg-gray-50">
                         <div className="flex justify-between items-start mb-2">
                           <div className="flex flex-wrap gap-1">
