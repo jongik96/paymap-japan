@@ -400,7 +400,7 @@ export default function MapPage() {
       const service = new window.google.maps.places.PlacesService(document.createElement('div'));
       
       const request = {
-        query: query + ' restaurant Japan', // 일본 전체 지역 검색
+        query: query, // 일본 전체 지역 검색
         // location과 radius 제거하여 일본 전체에서 검색
         type: 'restaurant'
       };
