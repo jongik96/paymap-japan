@@ -6,6 +6,7 @@ import Link from 'next/link';
 import ReviewForm from '@/components/ReviewForm';
 import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api';
 import { reviewsApi, restaurantsApi, type Review, type Restaurant } from '@/lib/api';
+import ThemeToggle from '@/components/ThemeToggle';
 
 // Extend Restaurant interface to include placeId for Google Places
 interface ExtendedRestaurant extends Restaurant {
@@ -337,24 +338,25 @@ export default function MapPage() {
     );
   }
 
-      return (
-      <div className="min-h-screen bg-gray-50">
+          return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
         {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+        <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-              <MapPin className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">PayMap Japan</h1>
+              <MapPin className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">PayMap Japan</h1>
             </Link>
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <ThemeToggle />
+              <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
                 <User className="h-4 w-4" />
                 <span>Anonymous: {anonymousId}</span>
               </div>
               <Link 
                 href="/" 
-                className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors"
               >
                 Back to Home
               </Link>
