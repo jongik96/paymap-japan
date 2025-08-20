@@ -39,73 +39,37 @@ interface UserActivityDashboardProps {
   isLoading?: boolean;
 }
 
-// Sample data for demonstration
-const sampleMetrics: ActivityMetric[] = [
-  {
-    label: '총 사용자',
-    value: 24567,
-    change: 12.3,
-    trend: 'up',
-    icon: <Users className="h-5 w-5" />,
-    color: 'blue'
-  },
-  {
-    label: '새 리뷰',
-    value: 1247,
-    change: 8.7,
-    trend: 'up',
-    icon: <MessageCircle className="h-5 w-5" />,
-    color: 'green'
-  },
-  {
-    label: '검색 수',
-    value: 5432,
-    change: -2.1,
-    trend: 'down',
-    icon: <Search className="h-5 w-5" />,
-    color: 'orange'
-  },
-  {
-    label: '즐겨찾기',
-    value: 891,
-    change: 15.6,
-    trend: 'up',
-    icon: <Heart className="h-5 w-5" />,
-    color: 'red'
-  },
-  {
-    label: '페이지 조회',
-    value: 18934,
-    change: 5.2,
-    trend: 'up',
-    icon: <Eye className="h-5 w-5" />,
-    color: 'purple'
-  },
-  {
-    label: '평균 세션',
-    value: 342,
-    change: 3.8,
-    trend: 'up',
-    icon: <Clock className="h-5 w-5" />,
-    color: 'indigo'
-  }
-];
 
-const sampleTimeSeries: TimeSeriesData[] = [
-  { time: '00:00', users: 120, reviews: 15, searches: 85 },
-  { time: '04:00', users: 89, reviews: 8, searches: 45 },
-  { time: '08:00', users: 245, reviews: 32, searches: 167 },
-  { time: '12:00', users: 456, reviews: 67, searches: 289 },
-  { time: '16:00', users: 389, reviews: 54, searches: 234 },
-  { time: '20:00', users: 567, reviews: 89, searches: 345 },
 ];
 
 export default function UserActivityDashboard({ 
-  data = { metrics: sampleMetrics, timeSeries: sampleTimeSeries }, 
+  data, 
   isLoading = false 
 }: UserActivityDashboardProps) {
   const { t } = useLanguage();
   const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d'>('24h');
+  const [actualData, setActualData] = useState<{ metrics: ActivityMetric[]; timeSeries: TimeSeriesData[] }>({ metrics: [], timeSeries: [] });
+
+  // 실제 데이터 가져오기
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/analytics?type=user-activity');
+        if (response.ok) {
+          const result = await response.json();
+          if (result.metrics && result.timeSeries) {
+            setActualData(result);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch user activity data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const displayData = actualData.metrics.length > 0 ? actualData : { metrics: [], timeSeries: [] };
 
   const getColorClasses = (color: string) => {
     const colors = {
@@ -171,7 +135,7 @@ export default function UserActivityDashboard({
     );
   }
 
-  const maxValue = Math.max(...data.timeSeries.map(d => Math.max(d.users, d.reviews * 5, d.searches)));
+  const maxValue = Math.max(...displayData.timeSeries.map(d => Math.max(d.users, d.reviews * 5, d.searches)));
 
   return (
     <div className="space-y-6">
@@ -203,7 +167,7 @@ export default function UserActivityDashboard({
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {data.metrics.map((metric, index) => (
+        {displayData.metrics.map((metric, index) => (
           <div
             key={metric.label}
             className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
@@ -254,7 +218,7 @@ export default function UserActivityDashboard({
 
         {/* Simple Bar Chart */}
         <div className="space-y-4">
-          {data.timeSeries.map((item, index) => (
+          {displayData.timeSeries.map((item, index) => (
             <div key={item.time} className="space-y-2">
               <div className="flex justify-between items-center text-sm">
                 <span className="text-gray-600 dark:text-gray-400 font-medium">

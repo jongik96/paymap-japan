@@ -17,23 +17,15 @@ interface PaymentMethodStatsProps {
   isLoading?: boolean;
 }
 
-// Sample data for demonstration
-const sampleData: PaymentMethodStat[] = [
-  { method: 'Credit Card', count: 1247, percentage: 32.5, trend: 'up', trendPercent: 12.3 },
-  { method: 'Suica/IC Card', count: 1156, percentage: 30.1, trend: 'up', trendPercent: 8.7 },
-  { method: 'PayPay', count: 789, percentage: 20.6, trend: 'up', trendPercent: 15.2 },
-  { method: 'Cash', count: 432, percentage: 11.3, trend: 'down', trendPercent: -5.4 },
-  { method: 'LINE Pay', count: 156, percentage: 4.1, trend: 'stable', trendPercent: 1.2 },
-  { method: 'Rakuten Pay', count: 54, percentage: 1.4, trend: 'up', trendPercent: 3.8 }
-];
+
 
 export default function PaymentMethodStats({ 
-  data = sampleData, 
+  data, 
   isLoading = false 
 }: PaymentMethodStatsProps) {
   const { t } = useLanguage();
   const [viewMode, setViewMode] = useState<'list' | 'chart'>('list');
-  const [actualData, setActualData] = useState<PaymentMethodStat[]>(sampleData);
+  const [actualData, setActualData] = useState<PaymentMethodStat[]>([]);
 
   // 실제 데이터 가져오기
   useEffect(() => {
@@ -54,7 +46,7 @@ export default function PaymentMethodStats({
     fetchData();
   }, []);
 
-  const displayData = actualData.length > 0 ? actualData : sampleData;
+  const displayData = actualData.length > 0 ? actualData : [];
   const totalCount = displayData.reduce((sum, item) => sum + item.count, 0);
 
   const getTrendIcon = (trend: string) => {
@@ -207,10 +199,10 @@ export default function PaymentMethodStats({
                 <div className="w-full h-4 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 rounded-full transition-all duration-500"
-                    style={{ 
-                      width: `${item.percentage}%`,
-                      animationDelay: `${data.indexOf(item) * 100}ms`
-                    }}
+                                         style={{ 
+                       width: `${item.percentage}%`,
+                       animationDelay: `${displayData.indexOf(item) * 100}ms`
+                     }}
                   />
                 </div>
               </div>

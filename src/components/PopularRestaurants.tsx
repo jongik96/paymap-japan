@@ -22,77 +22,15 @@ interface PopularRestaurantsProps {
   isLoading?: boolean;
 }
 
-// Sample data for demonstration
-const sampleData: PopularRestaurant[] = [
-  {
-    id: '1',
-    name: 'Sushi Zanmai Ginza',
-    rating: 4.8,
-    reviewCount: 1247,
-    paymentMethods: ['Credit Card', 'Suica', 'PayPay'],
-    location: 'Ginza, Tokyo',
-    category: 'Sushi',
-    trend: 'up',
-    trendPercent: 15.2,
-    totalVisits: 8943
-  },
-  {
-    id: '2',
-    name: 'Ichiran Ramen Shibuya',
-    rating: 4.6,
-    reviewCount: 2156,
-    paymentMethods: ['Cash', 'Credit Card', 'LINE Pay'],
-    location: 'Shibuya, Tokyo',
-    category: 'Ramen',
-    trend: 'up',
-    trendPercent: 12.8,
-    totalVisits: 7821
-  },
-  {
-    id: '3',
-    name: 'Tempura Tsunahachi',
-    rating: 4.7,
-    reviewCount: 892,
-    paymentMethods: ['Credit Card', 'Cash'],
-    location: 'Shinjuku, Tokyo',
-    category: 'Tempura',
-    trend: 'stable',
-    trendPercent: 2.1,
-    totalVisits: 6547
-  },
-  {
-    id: '4',
-    name: 'Kaikaya by the Sea',
-    rating: 4.9,
-    reviewCount: 543,
-    paymentMethods: ['Credit Card', 'Suica', 'PayPay', 'Rakuten Pay'],
-    location: 'Shibuya, Tokyo',
-    category: 'Seafood',
-    trend: 'up',
-    trendPercent: 8.9,
-    totalVisits: 5432
-  },
-  {
-    id: '5',
-    name: 'Tonki Tonkatsu',
-    rating: 4.5,
-    reviewCount: 678,
-    paymentMethods: ['Cash', 'Credit Card'],
-    location: 'Meguro, Tokyo',
-    category: 'Tonkatsu',
-    trend: 'down',
-    trendPercent: -3.2,
-    totalVisits: 4321
-  }
-];
+
 
 export default function PopularRestaurants({ 
-  data = sampleData, 
+  data, 
   isLoading = false 
 }: PopularRestaurantsProps) {
   const { t } = useLanguage();
   const [sortBy, setSortBy] = useState<'rating' | 'reviews' | 'visits'>('rating');
-  const [actualData, setActualData] = useState<PopularRestaurant[]>(sampleData);
+  const [actualData, setActualData] = useState<PopularRestaurant[]>([]);
 
   // 실제 데이터 가져오기
   useEffect(() => {
@@ -113,7 +51,7 @@ export default function PopularRestaurants({
     fetchData();
   }, []);
 
-  const displayData = actualData.length > 0 ? actualData : sampleData;
+  const displayData = actualData.length > 0 ? actualData : [];
 
   const getRankIcon = (index: number) => {
     switch (index) {
