@@ -83,7 +83,7 @@ async function getPaymentMethodStats(): Promise<NextResponse> {
         count,
         percentage: totalCount > 0 ? (count / totalCount) * 100 : 0,
         trend: 'stable' as const,
-        trendPercent: Math.random() * 20 - 10 // Random trend for demo
+        trendPercent: 0 // 일관된 값으로 변경
       }))
       .sort((a, b) => b.count - a.count);
 
@@ -116,8 +116,8 @@ async function getPopularRestaurants(): Promise<NextResponse> {
           location: restaurant.location as string || 'Unknown',
           category: restaurant.category as string || 'Restaurant',
           trend: 'stable' as const,
-          trendPercent: Math.random() * 20 - 10, // Random trend for demo
-          totalVisits: Math.floor(Math.random() * 10000) + 1000 // Random visits for demo
+          trendPercent: 0, // 일관된 값으로 변경
+          totalVisits: reviewCount * 100 // 리뷰 수 기반으로 일관된 값
         });
       }
     }
@@ -203,12 +203,12 @@ async function getUserActivity(): Promise<NextResponse> {
     for (let i = 0; i < 24; i += 4) {
       const hour = i.toString().padStart(2, '0') + ':00';
       const baseValue = totalReviews > 0 ? Math.floor(totalReviews / 6) : 0;
-      timeSeries.push({
-        time: hour,
-        users: baseValue > 0 ? Math.floor(baseValue * (0.5 + Math.random() * 0.5)) : 0,
-        reviews: baseValue > 0 ? Math.floor(baseValue * (0.3 + Math.random() * 0.4)) : 0,
-        searches: baseValue > 0 ? Math.floor(baseValue * (0.8 + Math.random() * 0.6)) : 0
-      });
+             timeSeries.push({
+         time: hour,
+         users: baseValue > 0 ? Math.floor(baseValue * (0.5 + (i % 3) * 0.2)) : 0,
+         reviews: baseValue > 0 ? Math.floor(baseValue * (0.3 + (i % 2) * 0.3)) : 0,
+         searches: baseValue > 0 ? Math.floor(baseValue * (0.8 + (i % 4) * 0.1)) : 0
+       });
     }
 
     // 최근 활동 데이터 생성 (실제 데이터 기반)
@@ -223,12 +223,12 @@ async function getUserActivity(): Promise<NextResponse> {
       
       for (let i = 0; i < 5; i++) {
         const action = sampleActions[i % sampleActions.length];
-        recentActivities.push({
-          time: `${(i + 1) * 3}분 전`,
-          user: `익명사용자_${Math.floor(Math.random() * 9000) + 1000}`,
-          action: action.action,
-          target: action.target
-        });
+                 recentActivities.push({
+           time: `${(i + 1) * 3}분 전`,
+           user: `익명사용자_${1000 + i}`,
+           action: action.action,
+           target: action.target
+         });
       }
     }
 
