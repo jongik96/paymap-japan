@@ -5,13 +5,10 @@ import { MapPin, CreditCard, Star, X, MessageCircle, Search, Loader2, Filter, Us
 import Link from 'next/link';
 import ReviewForm from '@/components/ReviewForm';
 import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api';
-import { reviewsApi, restaurantsApi, type Review, type Restaurant } from '@/lib/api';
+import { reviewsApi, type Review, type Restaurant } from '@/lib/api';
 import ThemeToggle from '@/components/ThemeToggle';
 
-// Extend Restaurant interface to include placeId for Google Places
-interface ExtendedRestaurant extends Restaurant {
-  placeId?: string;
-}
+
 
 const sampleRestaurants: Restaurant[] = [
   {

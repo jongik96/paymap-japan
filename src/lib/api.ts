@@ -78,7 +78,7 @@ export const reviewsApi = {
   },
 
   // Update helpful count
-  async updateHelpfulCount(reviewId: string, restaurantId: string, increment: boolean): Promise<boolean> {
+  async updateHelpfulCount(_reviewId: string, _restaurantId: string, _increment: boolean): Promise<boolean> {
     try {
       // This would need a new API endpoint for updating helpful count
       // For now, we'll return true as a placeholder

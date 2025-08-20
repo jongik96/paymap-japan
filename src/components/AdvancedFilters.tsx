@@ -44,7 +44,7 @@ export default function AdvancedFilters({
 }: AdvancedFiltersProps) {
   const [localFilters, setLocalFilters] = useState<FilterOptions>(filters);
 
-  const handleFilterChange = (key: keyof FilterOptions, value: any) => {
+  const handleFilterChange = (key: keyof FilterOptions, value: string[] | number | boolean) => {
     const newFilters = { ...localFilters, [key]: value };
     setLocalFilters(newFilters);
     onFiltersChange(newFilters);

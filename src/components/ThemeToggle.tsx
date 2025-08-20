@@ -5,7 +5,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useState, useEffect } from 'react';
 
 export default function ThemeToggle() {
-  const { theme, setTheme, isDark } = useTheme();
+  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   // Prevent hydration mismatch
