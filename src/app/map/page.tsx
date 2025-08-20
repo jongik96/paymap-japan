@@ -187,6 +187,20 @@ const { isLoaded, loadError } = useLoadScript({
     setSelectedRestaurant(restaurant);
     setCurrentRestaurantId(restaurant.id);
     
+    // 검색 결과 식당을 선택할 때 다른 검색 결과의 캐시 정리
+    if (restaurant.id.startsWith('search-')) {
+      setRestaurantReviews(prev => {
+        const newCache: { [key: string]: Review[] } = {};
+        // 기본 식당들과 현재 선택된 식당의 리뷰만 유지
+        Object.keys(prev).forEach(key => {
+          if (!key.startsWith('search-') || key === restaurant.id) {
+            newCache[key] = prev[key];
+          }
+        });
+        return newCache;
+      });
+    }
+    
     try {
       // 이미 로드된 리뷰가 있는지 확인
       if (restaurantReviews[restaurant.id]) {
@@ -296,6 +310,19 @@ const { isLoaded, loadError } = useLoadScript({
     if (!query.trim() || !window.google) return;
 
     setIsSearching(true);
+    
+    // 새로운 검색 시 이전 검색 결과의 리뷰 캐시 초기화
+    setRestaurantReviews(prev => {
+      const newCache: { [key: string]: Review[] } = {};
+      // 기본 식당들의 리뷰는 유지
+      Object.keys(prev).forEach(key => {
+        if (!key.startsWith('search-')) {
+          newCache[key] = prev[key];
+        }
+      });
+      return newCache;
+    });
+    
     try {
       const service = new window.google.maps.places.PlacesService(document.createElement('div'));
       
@@ -309,7 +336,7 @@ const { isLoaded, loadError } = useLoadScript({
       service.textSearch(request, (results, status) => {
         if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
           const restaurants: Restaurant[] = results.slice(0, 10).map((place, index) => ({
-            id: `search-${index}`,
+            id: `search-${Date.now()}-${index}-${place.place_id}`,
             name: place.name || 'Unknown Restaurant',
             address: place.formatted_address || 'Address not available',
             lat: place.geometry?.location?.lat() || 0,
