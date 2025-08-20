@@ -105,6 +105,7 @@ export default function MapPage() {
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [currentRestaurantId, setCurrentRestaurantId] = useState<string>('');
+  const [restaurantReviews, setRestaurantReviews] = useState<{ [key: string]: Review[] }>({});
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Restaurant[]>([]);
@@ -158,11 +159,16 @@ export default function MapPage() {
       });
 
       if (newReview) {
-        // 현재 선택된 식당의 리뷰에만 새 리뷰 추가
-        if (newReview.restaurantId === currentRestaurantId) {
-          const updatedReviews = [newReview, ...reviews];
-          setReviews(updatedReviews);
-        }
+        // 새 리뷰를 현재 식당의 리뷰에 추가
+        const updatedReviews = [newReview, ...reviews];
+        setReviews(updatedReviews);
+        
+        // 캐시도 업데이트
+        setRestaurantReviews(prev => ({
+          ...prev,
+          [currentRestaurantId]: updatedReviews
+        }));
+        
         setShowReviewForm(false);
       }
     } catch (error) {
@@ -171,20 +177,23 @@ export default function MapPage() {
   };
 
   const handleMarkerClick = async (restaurant: Restaurant) => {
-    // 이전 식당과 다른 경우 리뷰 초기화
-    if (selectedRestaurant?.id !== restaurant.id) {
-      setReviews([]);
-    }
-    
     setSelectedRestaurant(restaurant);
     setCurrentRestaurantId(restaurant.id);
     
     try {
+      // 이미 로드된 리뷰가 있는지 확인
+      if (restaurantReviews[restaurant.id]) {
+        setReviews(restaurantReviews[restaurant.id]);
+        return;
+      }
+      
       // Load reviews for this restaurant from API
-      const restaurantReviews = await loadReviews(restaurant.id);
-      if (restaurantReviews.length === 0) {
+      const apiReviews = await loadReviews(restaurant.id);
+      let finalReviews: Review[];
+      
+      if (apiReviews.length === 0) {
         // Show sample review if no real reviews exist
-        setReviews([
+        finalReviews = [
           {
             id: 'sample-1',
             restaurantId: restaurant.id,
@@ -196,14 +205,24 @@ export default function MapPage() {
             anonymousId: 'SampleUser',
             helpfulCount: 0
           }
-        ]);
+        ];
       } else {
-        setReviews(restaurantReviews);
+        finalReviews = apiReviews;
       }
+      
+      // 현재 식당의 리뷰만 설정
+      setReviews(finalReviews);
+      
+      // 캐시에 저장
+      setRestaurantReviews(prev => ({
+        ...prev,
+        [restaurant.id]: finalReviews
+      }));
+      
     } catch (error) {
       console.error('Failed to load reviews:', error);
       // Show sample review on error
-      setReviews([
+      const errorReviews = [
         {
           id: 'sample-1',
           restaurantId: restaurant.id,
@@ -215,7 +234,14 @@ export default function MapPage() {
           anonymousId: 'SampleUser',
           helpfulCount: 0
         }
-      ]);
+      ];
+      setReviews(errorReviews);
+      
+      // 에러 시에도 캐시에 저장
+      setRestaurantReviews(prev => ({
+        ...prev,
+        [restaurant.id]: errorReviews
+      }));
     }
   };
 
@@ -227,6 +253,14 @@ export default function MapPage() {
       if (success) {
         const updatedReviews = reviews.filter(review => review.id !== reviewId);
         setReviews(updatedReviews);
+        
+        // 캐시도 업데이트
+        if (currentRestaurantId) {
+          setRestaurantReviews(prev => ({
+            ...prev,
+            [currentRestaurantId]: updatedReviews
+          }));
+        }
       }
     } catch (error) {
       console.error('Failed to delete review:', error);
@@ -245,6 +279,14 @@ export default function MapPage() {
             : review
         );
         setReviews(updatedReviews);
+        
+        // 캐시도 업데이트
+        if (currentRestaurantId) {
+          setRestaurantReviews(prev => ({
+            ...prev,
+            [currentRestaurantId]: updatedReviews
+          }));
+        }
       }
     } catch (error) {
       console.error('Failed to update helpful count:', error);
@@ -643,15 +685,15 @@ export default function MapPage() {
                 position={{ lat: restaurant.lat, lng: restaurant.lng }}
                 title={restaurant.name}
                 onClick={() => handleMarkerClick(restaurant)}
-                icon={{
-                  url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="${restaurant.id.startsWith('search-') ? '#10B981' : '#3B82F6'}"/>
-                      <circle cx="12" cy="9" r="2.5" fill="white"/>
-                    </svg>
-                  `),
-                  scaledSize: new google.maps.Size(24, 24)
-                }}
+                                 icon={{
+                   url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                     <svg width="72" height="72" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                       <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="${restaurant.id.startsWith('search-') ? '#10B981' : '#3B82F6'}"/>
+                       <circle cx="12" cy="9" r="2.5" fill="white"/>
+                     </svg>
+                   `),
+                   scaledSize: new google.maps.Size(restaurant.id.startsWith('search-') ? 72 : 24, restaurant.id.startsWith('search-') ? 72 : 24)
+                 }}
               />
             ))}
           </GoogleMap>
