@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://paymap-japan.vercel.app/sitemap.xml
+
+# Disallow admin or private areas (if any)
+Disallow: /api/
+Disallow: /_next/
+
+# Allow important pages
+Allow: /
+Allow: /map
+Allow: /about
+Allow: /contact
