@@ -150,7 +150,7 @@ async function getUserActivity(): Promise<NextResponse> {
     const metrics: ActivityMetric[] = [
       {
         label: '총 사용자',
-        value: totalReviews > 0 ? Math.floor(totalReviews * 2.5) : 0, // 추정치: 리뷰 수의 2.5배
+        value: totalReviews > 0 ? 1000 : 0, // 고정값
         change: 0,
         trend: 'stable',
         icon: 'Users',
@@ -166,7 +166,7 @@ async function getUserActivity(): Promise<NextResponse> {
       },
       {
         label: '검색 수',
-        value: totalReviews > 0 ? Math.floor(totalReviews * 1.8) : 0, // 추정치: 리뷰 수의 1.8배
+        value: totalReviews > 0 ? 800 : 0, // 고정값
         change: 0,
         trend: 'stable',
         icon: 'Search',
@@ -174,7 +174,7 @@ async function getUserActivity(): Promise<NextResponse> {
       },
       {
         label: '즐겨찾기',
-        value: totalReviews > 0 ? Math.floor(totalReviews * 0.3) : 0, // 추정치: 리뷰 수의 30%
+        value: totalReviews > 0 ? 300 : 0, // 고정값
         change: 0,
         trend: 'stable',
         icon: 'Heart',
@@ -182,7 +182,7 @@ async function getUserActivity(): Promise<NextResponse> {
       },
       {
         label: '페이지 조회',
-        value: totalReviews > 0 ? Math.floor(totalReviews * 4.2) : 0, // 추정치: 리뷰 수의 4.2배
+        value: totalReviews > 0 ? 2000 : 0, // 고정값
         change: 0,
         trend: 'stable',
         icon: 'Eye',
@@ -190,7 +190,7 @@ async function getUserActivity(): Promise<NextResponse> {
       },
       {
         label: '평균 세션',
-        value: totalReviews > 0 ? Math.floor(totalReviews * 0.1) : 0, // 추정치: 리뷰 수의 10%
+        value: totalReviews > 0 ? 150 : 0, // 고정값
         change: 0,
         trend: 'stable',
         icon: 'Clock',
@@ -198,17 +198,16 @@ async function getUserActivity(): Promise<NextResponse> {
       }
     ];
 
-    // Generate time series data (last 24 hours) - 실제 데이터 기반
+        // Generate time series data (last 24 hours) - 고정값으로 변경
     const timeSeries = [];
     for (let i = 0; i < 24; i += 4) {
       const hour = i.toString().padStart(2, '0') + ':00';
-      const baseValue = totalReviews > 0 ? Math.floor(totalReviews / 6) : 0;
-             timeSeries.push({
-         time: hour,
-         users: baseValue > 0 ? Math.floor(baseValue * (0.5 + (i % 3) * 0.2)) : 0,
-         reviews: baseValue > 0 ? Math.floor(baseValue * (0.3 + (i % 2) * 0.3)) : 0,
-         searches: baseValue > 0 ? Math.floor(baseValue * (0.8 + (i % 4) * 0.1)) : 0
-       });
+      timeSeries.push({
+        time: hour,
+        users: totalReviews > 0 ? 50 + (i * 10) : 0,
+        reviews: totalReviews > 0 ? 20 + (i * 5) : 0,
+        searches: totalReviews > 0 ? 80 + (i * 15) : 0
+      });
     }
 
     // 최근 활동 데이터 생성 (실제 데이터 기반)
@@ -257,10 +256,10 @@ async function getOverviewStats(): Promise<NextResponse> {
     }
 
     const stats = {
-      totalUsers: totalReviews > 0 ? Math.floor(totalReviews * 2.5) : 0, // 추정치: 리뷰 수의 2.5배
+      totalUsers: totalReviews > 0 ? 1000 : 0, // 고정값
       totalReviews,
       totalRestaurants: restaurantKeys.length,
-      monthlyActiveUsers: totalReviews > 0 ? Math.floor(totalReviews * 1.8) : 0 // 추정치: 리뷰 수의 1.8배
+      monthlyActiveUsers: totalReviews > 0 ? 800 : 0 // 고정값
     };
 
     return NextResponse.json(stats);
