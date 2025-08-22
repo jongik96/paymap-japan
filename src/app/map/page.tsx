@@ -426,17 +426,43 @@ export default function MapPage() {
           // 검색 결과가 있을 때 리스트를 자동으로 표시
           if (restaurants.length > 0) {
             setShowSearchResultsList(true);
+            
+            // 검색된 모든 마커가 보이도록 지도 자동 조정
+            if (restaurants.length > 1) {
+              // 여러 결과가 있을 때: 모든 마커가 보이도록 bounds 계산
+              const bounds = new window.google.maps.LatLngBounds();
+              restaurants.forEach(restaurant => {
+                bounds.extend(new window.google.maps.LatLng(restaurant.lat, restaurant.lng));
+              });
+              
+              // 지도 중심을 bounds의 중앙으로 설정하고 적절한 줌 레벨 계산
+              const center = bounds.getCenter();
+              setMapCenter({ lat: center.lat(), lng: center.lng() });
+              
+              // bounds에 맞는 적절한 줌 레벨 계산
+              const ne = bounds.getNorthEast();
+              const sw = bounds.getSouthWest();
+              const latDiff = Math.abs(ne.lat() - sw.lat());
+              const lngDiff = Math.abs(ne.lng() - sw.lng());
+              
+              // 위도와 경도 차이에 따라 적절한 줌 레벨 결정
+              let zoom = 12;
+              if (latDiff > 5 || lngDiff > 5) zoom = 8;      // 매우 넓은 지역
+              else if (latDiff > 2 || lngDiff > 2) zoom = 10; // 넓은 지역
+              else if (latDiff > 1 || lngDiff > 1) zoom = 11; // 중간 지역
+              else if (latDiff > 0.5 || lngDiff > 0.5) zoom = 12; // 작은 지역
+              else zoom = 14; // 매우 작은 지역
+              
+              setMapZoom(zoom);
+            } else if (restaurants.length === 1) {
+              // 단일 결과일 때: 해당 위치로 이동하고 적절한 줌
+              setMapCenter({ lat: restaurants[0].lat, lng: restaurants[0].lng });
+              setMapZoom(15);
+            }
           }
           
           // Add to search history
           addSearchToHistory(query, { lat: mapCenter.lat, lng: mapCenter.lng });
-          
-          // 검색 결과가 있을 때만 지도 중심을 이동 (사용자가 원하는 경우)
-          if (restaurants.length > 0) {
-            // 첫 번째 결과로 지도 중심 이동 (선택사항)
-            // setMapCenter({ lat: restaurants[0].lat, lng: restaurants[0].lng });
-            // setMapZoom(15);
-          }
         } else {
           setSearchResults([]);
         }
