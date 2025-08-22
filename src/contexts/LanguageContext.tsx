@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type Language = 'en' | 'ja' | 'ko';
+export type Language = 'en' | 'ja' | 'ko' | 'zh';
 
 interface LanguageContextType {
   language: Language;
@@ -26,6 +26,9 @@ const translations = {
     'search.searching': 'Searching...',
     'search.clear': 'Clear',
     'search.clearAll': 'Show original restaurants',
+    'search.info': 'You can search for restaurants across all of Japan!',
+    'search.examples': 'Examples: "Ramen", "Sushi", "Osaka restaurants", "Tokyo cafes", "Kyoto traditional food", etc.',
+    'search.nationwide': 'Search results will be found nationwide in Japan.',
     
     // Filters
     'filters.paymentMethods': 'Payment Methods',
@@ -44,6 +47,12 @@ const translations = {
     'results.found': 'Found {count} restaurant(s)',
     'results.showing': 'Showing {count} restaurant(s)',
     'results.withSelectedMethods': ' with selected payment methods',
+    'results.searchResults': 'Search Results',
+    'results.restaurants': 'restaurants',
+    'results.nationwideSearch': 'Searched nationwide in Japan',
+    'results.filteredByPayment': 'Filtered by selected payment methods',
+    'results.backToOriginal': 'Back to original restaurants',
+    'results.basicRestaurants': 'Showing {count} basic restaurants',
     
     // Restaurant Info
     'restaurant.paymentMethods': 'Payment Methods',
@@ -51,6 +60,8 @@ const translations = {
     'restaurant.writeReview': 'Write Review',
     'restaurant.noReviews': 'No reviews yet. Be the first to review!',
     'restaurant.searchResult': 'Search Result',
+    'restaurant.restaurant': 'Restaurant',
+    'restaurant.city': 'City',
     
     // Reviews
     'review.sample': 'Sample review - Add your own review to share actual payment options!',
@@ -165,6 +176,16 @@ const translations = {
     'contentFilter.tooShort': 'Review too short',
     'contentFilter.tooLong': 'Review too long',
     'contentFilter.paymentKeywords': 'Please include content related to payment methods.',
+    
+    // Map Controls
+    'map.zoomIn': 'Zoom In',
+    'map.zoomOut': 'Zoom Out',
+    'map.currentLocation': 'Go to current location',
+    'map.locationDetecting': 'Detecting location...',
+    'map.currentLocationSuccess': 'Current location',
+    'map.kyotoDefault': 'Kyoto (Default)',
+    'map.showSearchResults': 'Show search results',
+    'map.hideSearchResults': 'Hide search results',
   },
   ja: {
     // Header
@@ -178,6 +199,9 @@ const translations = {
     'search.searching': '検索中...',
     'search.clear': 'クリア',
     'search.clearAll': '元のレストランを表示',
+    'search.info': '日本全国のレストランを検索できます！',
+    'search.examples': '例：「ラーメン」「寿司」「大阪 レストラン」「東京 カフェ」「京都 伝統料理」など',
+    'search.nationwide': '検索結果は日本全国から見つかります。',
     
     // Filters
     'filters.paymentMethods': '決済方法',
@@ -196,6 +220,12 @@ const translations = {
     'results.found': '{count}件のレストランが見つかりました',
     'results.showing': '{count}件のレストランを表示中',
     'results.withSelectedMethods': '選択された決済方法で',
+    'results.searchResults': '検索結果',
+    'results.restaurants': '件のレストラン',
+    'results.nationwideSearch': '日本全国で検索されました',
+    'results.filteredByPayment': '選択された決済方法でフィルタリングされました',
+    'results.backToOriginal': '元のレストランに戻る',
+    'results.basicRestaurants': '基本レストラン{count}件を表示中',
     
     // Restaurant Info
     'restaurant.paymentMethods': '決済方法',
@@ -203,6 +233,8 @@ const translations = {
     'restaurant.writeReview': 'レビューを書く',
     'restaurant.noReviews': 'まだレビューがありません。最初のレビューを書いてみましょう！',
     'restaurant.searchResult': '検索結果',
+    'restaurant.restaurant': 'レストラン',
+    'restaurant.city': '都市',
     
     // Reviews
     'review.sample': 'サンプルレビュー - 実際の決済オプションを共有するには、独自のレビューを追加してください！',
@@ -317,6 +349,16 @@ const translations = {
     'contentFilter.tooShort': 'レビューが短すぎる',
     'contentFilter.tooLong': 'レビューが長すぎる',
     'contentFilter.paymentKeywords': '決済方法に関連する内容を含めてください。',
+    
+    // Map Controls
+    'map.zoomIn': '拡大',
+    'map.zoomOut': '縮小',
+    'map.currentLocation': '現在地に移動',
+    'map.locationDetecting': '位置情報を検出中...',
+    'map.currentLocationSuccess': '現在地',
+    'map.kyotoDefault': '京都（デフォルト）',
+    'map.showSearchResults': '検索結果を表示',
+    'map.hideSearchResults': '検索結果を非表示',
   },
   ko: {
     // Header
@@ -330,6 +372,9 @@ const translations = {
     'search.searching': '검색 중...',
     'search.clear': '지우기',
     'search.clearAll': '원래 레스토랑 표시',
+    'search.info': '일본 전체 지역의 식당을 검색할 수 있습니다!',
+    'search.examples': '예시: "라멘", "스시", "오사카 음식점", "도쿄 카페", "교토 전통음식" 등',
+    'search.nationwide': '검색 결과는 일본 전역에서 찾아집니다.',
     
     // Filters
     'filters.paymentMethods': '결제 방법',
@@ -348,6 +393,12 @@ const translations = {
     'results.found': '{count}개의 레스토랑을 찾았습니다',
     'results.showing': '{count}개의 레스토랑을 표시 중',
     'results.withSelectedMethods': '선택된 결제 방법으로',
+    'results.searchResults': '검색 결과',
+    'results.restaurants': '개 식당',
+    'results.nationwideSearch': '일본 전체 지역에서 검색됨',
+    'results.filteredByPayment': '선택된 결제수단으로 필터링됨',
+    'results.backToOriginal': '기본 식당으로 돌아가기',
+    'results.basicRestaurants': '기본 식당 {count}개 표시 중',
     
     // Restaurant Info
     'restaurant.paymentMethods': '결제 방법',
@@ -355,6 +406,8 @@ const translations = {
     'restaurant.writeReview': '리뷰 작성',
     'restaurant.noReviews': '아직 리뷰가 없습니다. 첫 번째 리뷰를 작성해보세요!',
     'restaurant.searchResult': '검색 결과',
+    'restaurant.restaurant': '식당',
+    'restaurant.city': '도시',
     
     // Reviews
     'review.sample': '샘플 리뷰 - 실제 결제 옵션을 공유하려면 자체 리뷰를 추가하세요!',
@@ -469,6 +522,189 @@ const translations = {
     'contentFilter.tooShort': '리뷰가 너무 짧음',
     'contentFilter.tooLong': '리뷰가 너무 김',
     'contentFilter.paymentKeywords': '결제 수단과 관련된 내용을 포함하여 작성해주세요.',
+    
+    // Map Controls
+    'map.zoomIn': '확대',
+    'map.zoomOut': '축소',
+    'map.currentLocation': '현재 위치로 이동',
+    'map.locationDetecting': '위치 감지 중...',
+    'map.currentLocationSuccess': '현재 위치',
+    'map.kyotoDefault': '교토 (기본)',
+    'map.showSearchResults': '검색 결과 보기',
+    'map.hideSearchResults': '검색 결과 숨기기',
+  },
+  zh: {
+    // Header
+    'header.title': 'PayMap Japan',
+    'header.backToHome': '返回首页',
+    'header.anonymous': '匿名',
+    
+    // Search
+    'search.placeholder': 'Search for restaurants in Japan...',
+    'search.button': '搜索',
+    'search.searching': '搜索中...',
+    'search.clear': '清除',
+    'search.clearAll': '显示原始餐厅',
+    'search.info': '您可以搜索全日本的餐厅！',
+    'search.examples': '示例："拉面"、"寿司"、"大阪餐厅"、"东京咖啡厅"、"京都传统美食"等',
+    'search.nationwide': '搜索结果将在日本全国范围内查找。',
+    
+    // Filters
+    'filters.paymentMethods': '支付方式',
+    'filters.advanced': '高级筛选',
+    'filters.sort': '排序',
+    'filters.history': '历史记录',
+    'filters.favorites': '收藏夹',
+    'filters.clearAll': '清除所有筛选',
+    'filters.active': '已激活',
+    
+    // Payment Methods
+    'payment.selectMethods': '选择支付方式:',
+    'payment.basedOnSample': '* 支付方式基于示例数据。添加您自己的评论以分享实际支付选项。',
+    
+    // Results
+    'results.found': '找到 {count} 家餐厅',
+    'results.showing': '显示 {count} 家餐厅',
+    'results.withSelectedMethods': '使用选定的支付方式',
+    'results.searchResults': '搜索结果',
+    'results.restaurants': '家餐厅',
+    'results.nationwideSearch': '在日本全国范围内搜索',
+    'results.filteredByPayment': '按选定支付方式筛选',
+    'results.backToOriginal': '返回原始餐厅',
+    'results.basicRestaurants': '显示 {count} 家基本餐厅',
+    
+    // Restaurant Info
+    'restaurant.paymentMethods': '支付方式',
+    'restaurant.reviews': '评论',
+    'restaurant.writeReview': '写评论',
+    'restaurant.noReviews': '还没有评论。成为第一个评论者！',
+    'restaurant.searchResult': '搜索结果',
+    'restaurant.restaurant': '餐厅',
+    'restaurant.city': '城市',
+    
+    // Reviews
+    'review.sample': '示例评论 - 添加您自己的评论以分享实际支付选项！',
+    'review.delete': '删除',
+    'review.helpful': '👍',
+    
+    // Advanced Filters
+    'advancedFilters.title': '高级筛选',
+    'advancedFilters.priceRange': '价格范围',
+    'advancedFilters.rating': '最低评分',
+    'advancedFilters.distance': '距离 (公里)',
+    'advancedFilters.openNow': '营业中',
+    'advancedFilters.hasReviews': '有评论',
+    'advancedFilters.paymentMethods': '支付方式',
+    'advancedFilters.clearAll': '全部清除',
+    'advancedFilters.apply': '应用筛选',
+    
+    // Sort Options
+    'sort.title': '排序选项',
+    'sort.rating': '评分',
+    'sort.reviewCount': '评论数',
+    'sort.distance': '距离',
+    'sort.name': '名称',
+    'sort.newest': '最新',
+    'sort.ascending': '升序',
+    'sort.descending': '降序',
+    
+    // Search History
+    'history.title': '搜索历史',
+    'history.noHistory': '还没有搜索历史',
+    'history.historyDesc': '您的最近搜索将显示在这里',
+    'history.recentSearches': '次最近搜索',
+    'history.clearAll': '全部清除',
+    'history.justNow': '刚刚',
+    'history.minutesAgo': '{count} 分钟前',
+    'history.hoursAgo': '{count} 小时前',
+    'history.daysAgo': '{count} 天前',
+    'history.locationSaved': '位置已保存',
+    
+    // Favorites
+    'favorites.title': '我的收藏',
+    'favorites.noFavorites': '还没有收藏',
+    'favorites.noFavoritesDesc': '将餐厅添加到收藏夹以在此处查看',
+    'favorites.view': '查看',
+    'favorites.addNote': '添加备注',
+    'favorites.editNote': '编辑备注',
+    'favorites.save': '保存',
+    'favorites.cancel': '取消',
+    'favorites.noNote': '未添加备注',
+    'favorites.added': '添加日期',
+    'favorites.today': '今天',
+    'favorites.yesterday': '昨天',
+    'favorites.daysAgo': '{count} 天前',
+    'favorites.clearAll': '全部清除',
+    
+    // Common
+    'common.loading': '加载中...',
+    'common.error': '错误',
+    'common.success': '成功',
+    'common.close': '关闭',
+    'common.save': '保存',
+    'common.cancel': '取消',
+    'common.delete': '删除',
+    'common.edit': '编辑',
+    'common.add': '添加',
+    'common.view': '查看',
+    'common.clear': '清除',
+    'common.apply': '应用',
+    'common.reset': '重置',
+    'common.search': '搜索',
+    'common.filter': '筛选',
+    'common.sort': '排序',
+    'common.favorites': '收藏夹',
+    'common.history': '历史记录',
+    'common.settings': '设置',
+    'common.language': '语言',
+    'common.theme': '主题',
+    'common.darkMode': '深色模式',
+    'common.lightMode': '浅色模式',
+    'common.system': '系统',
+    
+    // Main page
+    'paymentMethodReviewService': '支付方式评论服务',
+    'discoverPaymentMethods': '发现日本餐厅的支付方式',
+    'heroDescription': '在Google地图上找到餐厅，检查可用的支付方式，并与他人分享您的体验',
+    'viewMap': '查看地图',
+    'writeReview': '写评论',
+    'mapBasedSearch': '基于地图的搜索',
+    'mapBasedSearchDesc': '轻松找到您所需区域的餐厅，并在Google地图上检查它们的位置',
+    'paymentMethodInfo': '支付方式信息',
+    'paymentMethodInfoDesc': '一目了然地查看每家餐厅可用的支付方式',
+    'realTimeReviews': '实时评论',
+    'realTimeReviewsDesc': '留下关于支付方式的匿名评论，并与他人分享',
+    'howToUse': '使用方法',
+    'findRestaurants': '查找餐厅',
+    'findRestaurantsDesc': '浏览地图以找到您所需区域的餐厅',
+    'clickMarker': '点击标记',
+    'clickMarkerDesc': '点击餐厅标记以查看详细信息',
+    'checkPayment': '检查支付',
+    'checkPaymentDesc': '查看可用的支付方式和其他人的评论',
+    'writeReviewDesc': '通过写评论分享您的体验',
+    
+    // Content Filtering
+    'contentFilter.title': '内容验证结果',
+    'contentFilter.violations': '检测到的问题:',
+    'contentFilter.warning': '警告:',
+    'contentFilter.filteredText': '过滤后的文本:',
+    'contentFilter.inappropriateLanguage': '不当语言使用',
+    'contentFilter.advertising': '广告内容',
+    'contentFilter.sensitiveTopic': '敏感话题提及',
+    'contentFilter.spam': '垃圾内容',
+    'contentFilter.tooShort': '评论太短',
+    'contentFilter.tooLong': '评论太长',
+    'contentFilter.paymentKeywords': '请包含与支付方式相关的内容。',
+    
+    // Map Controls
+    'map.zoomIn': '放大',
+    'map.zoomOut': '缩小',
+    'map.currentLocation': '前往当前位置',
+    'map.locationDetecting': '正在检测位置...',
+    'map.currentLocationSuccess': '当前位置',
+    'map.kyotoDefault': '京都（默认）',
+    'map.showSearchResults': '显示搜索结果',
+    'map.hideSearchResults': '隐藏搜索结果',
   }
 };
 
@@ -478,7 +714,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   // Load language preference from localStorage
   useEffect(() => {
     const savedLanguage = localStorage.getItem('paymap_language') as Language;
-    if (savedLanguage && ['en', 'ja', 'ko'].includes(savedLanguage)) {
+    if (savedLanguage && ['en', 'ja', 'ko', 'zh'].includes(savedLanguage)) {
       setLanguage(savedLanguage);
     }
   }, []);

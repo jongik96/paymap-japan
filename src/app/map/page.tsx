@@ -732,9 +732,9 @@ export default function MapPage() {
               <p className="text-sm text-blue-800 flex items-start">
                 <span className="mr-2">💡</span>
                 <span>
-                  <strong>일본 전체 지역의 식당을 검색할 수 있습니다!</strong><br/>
-                  예시: &ldquo;라멘&rdquo;, &ldquo;스시&rdquo;, &ldquo;오사카 음식점&rdquo;, &ldquo;도쿄 카페&rdquo;, &ldquo;교토 전통음식&rdquo; 등<br/>
-                  검색 결과는 일본 전역에서 찾아집니다.
+                  <strong>{t('search.info')}</strong><br/>
+                  {t('search.examples')}<br/>
+                  {t('search.nationwide')}
                 </span>
               </p>
             </div>
@@ -815,7 +815,7 @@ export default function MapPage() {
           {/* Payment Methods Filter */}
           {showFilters && (
             <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-gray-700 mb-3">Select Payment Methods:</h3>
+              <h3 className="text-sm font-medium text-gray-700 mb-3">{t('payment.selectMethods')}</h3>
               <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
                 {allPaymentMethods.map((method) => (
                   <label
@@ -841,19 +841,19 @@ export default function MapPage() {
               {searchResults.length > 0 ? (
                 <div className="flex items-center space-x-2">
                   <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
-                    🔍 검색 결과: {searchResults.length}개 식당
+                    🔍 {t('results.searchResults')}: {searchResults.length}{t('results.restaurants')}
                   </span>
                   <span className="text-gray-500">•</span>
-                  <span>일본 전체 지역에서 검색됨</span>
+                  <span>{t('results.nationwideSearch')}</span>
                 </div>
               ) : (
-                <span>기본 식당 {filteredRestaurants.length}개 표시 중</span>
+                <span>{t('results.basicRestaurants').replace('{count}', filteredRestaurants.length.toString())}</span>
               )}
               
               {selectedPaymentMethods.length > 0 && (
                 <>
                   <span className="text-gray-500">•</span>
-                  <span>선택된 결제수단으로 필터링됨</span>
+                  <span>{t('results.filteredByPayment')}</span>
                 </>
               )}
             </div>
@@ -863,7 +863,7 @@ export default function MapPage() {
                 onClick={clearSearch}
                 className="text-blue-600 hover:text-blue-700 underline font-medium"
               >
-                기본 식당으로 돌아가기
+                {t('results.backToOriginal')}
               </button>
             )}
           </div>
@@ -879,19 +879,19 @@ export default function MapPage() {
             {locationStatus === 'detecting' && (
               <div className="bg-blue-100 text-blue-800 px-3 py-2 rounded-lg text-sm font-medium flex items-center space-x-2">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                <span>위치 감지 중...</span>
+                <span>{t('map.locationDetecting')}</span>
               </div>
             )}
             {locationStatus === 'success' && (
               <div className="bg-green-100 text-green-800 px-3 py-2 rounded-lg text-sm font-medium flex items-center space-x-2">
                 <span>✅</span>
-                <span>현재 위치</span>
+                <span>{t('map.currentLocationSuccess')}</span>
               </div>
             )}
             {locationStatus === 'error' && (
               <div className="bg-orange-100 text-orange-800 px-3 py-2 rounded-lg text-sm font-medium flex items-center space-x-2">
                 <span>📍</span>
-                <span>교토 (기본)</span>
+                <span>{t('map.kyotoDefault')}</span>
               </div>
             )}
           </div>
@@ -903,14 +903,14 @@ export default function MapPage() {
               <button
                 onClick={() => setMapZoom(prev => Math.min(prev + 1, 20))}
                 className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-b border-gray-200 dark:border-gray-700"
-                title="확대"
+                title={t('map.zoomIn')}
               >
                 <span className="text-lg font-bold text-gray-600 dark:text-gray-300">+</span>
               </button>
               <button
                 onClick={() => setMapZoom(prev => Math.max(prev - 1, 3))}
                 className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                title="축소"
+                title={t('map.zoomOut')}
               >
                 <span className="text-lg font-bold text-gray-600 dark:text-gray-300">−</span>
               </button>
@@ -920,7 +920,7 @@ export default function MapPage() {
             <button
               onClick={getCurrentLocation}
               className="w-10 h-10 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center"
-              title="현재 위치로 이동"
+              title={t('map.currentLocation')}
             >
               <Navigation className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </button>
@@ -932,12 +932,12 @@ export default function MapPage() {
               {/* Header */}
               <div className="flex items-center justify-between p-3 bg-blue-600 text-white">
                 <h3 className="font-semibold text-sm">
-                  🔍 검색 결과 ({searchResults.length}개)
+                  🔍 {t('results.searchResults')} ({searchResults.length}{t('results.restaurants')})
                 </h3>
                 <button
                   onClick={() => setShowSearchResultsList(false)}
                   className="text-white hover:text-gray-200 transition-colors"
-                  title="리스트 숨기기"
+                  title={t('map.hideSearchResults')}
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -962,7 +962,7 @@ export default function MapPage() {
                         {restaurant.name}
                       </h4>
                       <span className="text-xs text-gray-500 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded flex-shrink-0">
-                        식당
+                        {t('restaurant.restaurant')}
                       </span>
                     </div>
                     
@@ -1001,10 +1001,10 @@ export default function MapPage() {
             <button
               onClick={() => setShowSearchResultsList(true)}
               className="absolute top-20 left-4 z-10 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg shadow-lg transition-colors flex items-center space-x-2"
-              title="검색 결과 보기"
+              title={t('map.showSearchResults')}
             >
               <Search className="h-4 w-4" />
-              <span className="text-sm font-medium">검색 결과 보기 ({searchResults.length})</span>
+              <span className="text-sm font-medium">{t('map.showSearchResults')} ({searchResults.length})</span>
             </button>
           )}
           
@@ -1119,20 +1119,20 @@ export default function MapPage() {
                   ))}
                 </div>
                 <p className="text-sm text-gray-500 mt-2">
-                  * Payment methods are based on sample data. Add your own review to share actual payment options.
+                  * {t('payment.basedOnSample')}
                 </p>
               </div>
 
               {/* Reviews Section */}
               <div className="mb-6">
                 <div className="flex justify-between items-center mb-3">
-                  <h3 className="text-lg font-semibold text-gray-900">Reviews</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">{t('restaurant.reviews')}</h3>
                   <button
                     onClick={() => setShowReviewForm(true)}
                     className="text-blue-600 hover:text-blue-700 text-sm flex items-center font-medium transition-colors"
                   >
                     <MessageCircle className="h-4 w-4 mr-1" />
-                    Write Review
+                    {t('restaurant.writeReview')}
                   </button>
                 </div>
 
@@ -1192,7 +1192,7 @@ export default function MapPage() {
                                 className="text-xs text-red-600 hover:text-red-700 flex items-center space-x-1"
                               >
                                 <Trash2 className="h-3 w-3" />
-                                <span>Delete</span>
+                                <span>{t('review.delete')}</span>
                               </button>
                             )}
                           </div>
@@ -1201,7 +1201,7 @@ export default function MapPage() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-sm">No reviews yet. Be the first to review!</p>
+                  <p className="text-gray-500 text-sm">{t('restaurant.noReviews')}</p>
                 )}
               </div>
             </div>
