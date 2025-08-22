@@ -462,7 +462,7 @@ export default function MapPage() {
       service.textSearch(request, (results, status) => {
         if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
           const restaurants: Restaurant[] = results.slice(0, 20).map((place, index) => ({ // 결과 수를 20개로 증가
-            id: `search-${Date.now()}-${index}-${place.place_id}`,
+            id: `search-${place.place_id}`,
             name: place.name || 'Unknown Restaurant',
             address: place.formatted_address || 'Address not available',
             lat: place.geometry?.location?.lat() || 0,
