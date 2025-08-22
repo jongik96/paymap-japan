@@ -1183,28 +1183,55 @@ export default function MapPage() {
                     )}
                   </div>
 
-                  {/* Payment Methods */}
-                  <div className="mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                      <CreditCard className="h-5 w-5 mr-2" />
-                      Payment Methods
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedRestaurant.paymentMethods.map((method, index) => (
-                        <span
-                          key={index}
-                          className={`px-3 py-1 text-sm rounded-full font-medium ${
-                            selectedPaymentMethods.includes(method)
-                              ? 'bg-blue-100 text-blue-800'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}
-                        >
-                          {method}
-                        </span>
-                      ))}
-                    </div>
-                    
-                  </div>
+                                     {/* Payment Methods */}
+                   <div className="mb-6">
+                     <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                       <CreditCard className="h-5 w-5 mr-2" />
+                       {t('restaurant.paymentMethods')}
+                     </h3>
+                     
+                     {/* 실제 리뷰에서 결제수단 정보를 추출하여 표시 */}
+                     {(() => {
+                       const paymentMethodsFromReviews = new Set<string>();
+                       currentReviews.forEach(review => {
+                         review.paymentMethods.forEach(method => {
+                           paymentMethodsFromReviews.add(method);
+                         });
+                       });
+                       
+                       const uniquePaymentMethods = Array.from(paymentMethodsFromReviews);
+                       
+                       if (uniquePaymentMethods.length > 0) {
+                         return (
+                           <div className="flex flex-wrap gap-2">
+                             {uniquePaymentMethods.map((method, index) => (
+                               <span
+                                 key={index}
+                                 className={`px-3 py-1 text-sm rounded-full font-medium ${
+                                   selectedPaymentMethods.includes(method)
+                                     ? 'bg-blue-100 text-blue-800'
+                                     : 'bg-gray-100 text-gray-800'
+                                 }`}
+                               >
+                                 {method}
+                               </span>
+                             ))}
+                           </div>
+                         );
+                       } else {
+                         return (
+                           <div className="text-center py-4">
+                             <div className="text-gray-400 mb-2">
+                               <CreditCard className="h-8 w-8 mx-auto" />
+                             </div>
+                             <p className="text-gray-500 text-sm">
+                               {t('restaurant.noPaymentMethods')}
+                             </p>
+                           </div>
+                         );
+                       }
+                     })()}
+                   </div>
 
                   {/* Reviews Section */}
                   <div className="mb-6">
