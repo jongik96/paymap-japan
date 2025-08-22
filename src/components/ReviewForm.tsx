@@ -244,7 +244,7 @@ export default function ReviewForm({ restaurantName, onClose, onSubmit }: Review
               <textarea
                 {...register('comment')}
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-500"
                 placeholder="Share your experience with payment methods at this restaurant..."
               />
               <div className="flex justify-between items-center mt-1">

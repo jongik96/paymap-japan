@@ -249,11 +249,13 @@ export default function MapPage() {
     let currentY = 0;
     let isDragging = false;
     let lastScrollTop = 0;
+    let isScrolling = false;
 
     const handleTouchStart = (e: Event) => {
       const touchEvent = e as TouchEvent;
       startY = touchEvent.touches[0].clientY;
       isDragging = true;
+      isScrolling = false;
     };
 
     const handleTouchMove = (e: Event) => {
@@ -263,8 +265,13 @@ export default function MapPage() {
       
       const deltaY = currentY - startY;
       
+      // 스크롤 중에는 제스처 감지하지 않음
+      if (Math.abs(deltaY) < 10) {
+        return;
+      }
+      
       // 위에서 아래로 스크롤할 때 (음수 deltaY) 사이드바 닫기
-      if (deltaY < -30) {
+      if (deltaY < -50) {
         setSelectedRestaurant(null);
         isDragging = false;
       }
@@ -276,14 +283,19 @@ export default function MapPage() {
       isDragging = false;
     };
 
-    // 스크롤 감지를 위한 함수
+    // 스크롤 감지를 위한 함수 - 더 정교하게 조정
     const handleScroll = (e: Event) => {
       const target = e.target as HTMLElement;
-      if (target.scrollTop < lastScrollTop && target.scrollTop === 0) {
-        // 맨 위에서 위로 스크롤하면 사이드바 닫기
-        setSelectedRestaurant(null);
+      const currentScrollTop = target.scrollTop;
+      
+      // 맨 위에서 위로 스크롤할 때만 사이드바 닫기
+      if (currentScrollTop < lastScrollTop && currentScrollTop === 0) {
+        // 스크롤 방향이 위쪽이고 맨 위에 있을 때만
+        if (lastScrollTop > 10) { // 최소 10px 이상 스크롤했을 때만 감지
+          setSelectedRestaurant(null);
+        }
       }
-      lastScrollTop = target.scrollTop;
+      lastScrollTop = currentScrollTop;
     };
 
     // 사이드바 내부의 스크롤 이벤트도 감지
