@@ -228,6 +228,19 @@ export default function MapPage() {
     console.log('🗺️ Map center updated to:', mapCenter.lat, mapCenter.lng);
   }, [mapCenter]);
 
+  // Prevent body scroll when sidebar is open on mobile
+  useEffect(() => {
+    if (selectedRestaurant && window.innerWidth < 1024) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [selectedRestaurant]);
+
   const handleReviewSubmit = async (data: { paymentMethods: string[]; comment: string; rating: number }) => {
     if (!selectedRestaurant) return;
 
@@ -694,13 +707,13 @@ export default function MapPage() {
             <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={t('search.placeholder')}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
+                                 <input
+                   type="text"
+                   value={searchQuery}
+                   onChange={(e) => setSearchQuery(e.target.value)}
+                   placeholder={t('search.placeholder')}
+                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-500"
+                 />
               </div>
               <div className="flex gap-2">
                 <button
@@ -1053,30 +1066,39 @@ export default function MapPage() {
 
         {/* Restaurant Info Sidebar */}
         {selectedRestaurant && (
-          <div className="w-full lg:w-96 bg-white shadow-lg border-t lg:border-l lg:border-t-0 overflow-y-auto max-h-[50vh] lg:max-h-none">
-            <div className="p-6">
-                             {/* Restaurant Header */}
-               <div className="flex justify-between items-start mb-4">
+          <>
+            {/* Mobile Backdrop */}
+            <div className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40" onClick={() => setSelectedRestaurant(null)} />
+            
+            <div className="fixed lg:relative bottom-0 lg:bottom-auto left-0 lg:left-auto right-0 lg:right-auto w-full lg:w-96 bg-white shadow-2xl lg:shadow-lg border-t lg:border-l lg:border-t-0 overflow-y-auto max-h-[70vh] lg:max-h-none z-50 lg:z-auto transform transition-all duration-300 ease-out lg:transform-none rounded-t-2xl lg:rounded-none">
+                        <div className="p-6">
+              {/* Mobile Handle Bar */}
+              <div className="lg:hidden flex justify-center mb-4">
+                <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+              </div>
+              
+                              {/* Restaurant Header */}
+                <div className="flex justify-between items-start mb-4">
                  <h2 className="text-xl font-bold text-gray-900">{selectedRestaurant.name}</h2>
-                 <div className="flex items-center space-x-2">
-                   <button
-                     onClick={() => handleAddToFavorites(selectedRestaurant)}
-                     className={`p-2 rounded-full transition-colors ${
-                       isInFavorites(selectedRestaurant.id)
-                         ? 'text-red-500 hover:text-red-600'
-                         : 'text-gray-400 hover:text-red-500'
-                     }`}
-                     title={isInFavorites(selectedRestaurant.id) ? 'Remove from favorites' : 'Add to favorites'}
-                   >
-                     <Heart className={`h-5 w-5 ${isInFavorites(selectedRestaurant.id) ? 'fill-current' : ''}`} />
-                   </button>
-                   <button
-                     onClick={() => setSelectedRestaurant(null)}
-                     className="text-gray-400 hover:text-gray-600 transition-colors"
-                   >
-                     <X className="h-5 w-5" />
-                   </button>
-                 </div>
+                                   <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => handleAddToFavorites(selectedRestaurant)}
+                      className={`p-2 rounded-full transition-colors ${
+                        isInFavorites(selectedRestaurant.id)
+                          ? 'text-red-500 hover:text-red-600'
+                          : 'text-gray-400 hover:text-red-500'
+                      }`}
+                      title={isInFavorites(selectedRestaurant.id) ? 'Remove from favorites' : 'Add to favorites'}
+                    >
+                      <Heart className={`h-5 w-5 ${isInFavorites(selectedRestaurant.id) ? 'fill-current' : ''}`} />
+                    </button>
+                    <button
+                      onClick={() => setSelectedRestaurant(null)}
+                      className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-100"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
+                  </div>
                </div>
 
               {/* Restaurant Details */}
@@ -1205,7 +1227,7 @@ export default function MapPage() {
                 )}
               </div>
             </div>
-          </div>
+          </>
         )}
 
                  {/* Review Form Modal */}
