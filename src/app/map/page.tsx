@@ -241,6 +241,45 @@ export default function MapPage() {
     };
   }, [selectedRestaurant]);
 
+  // Add touch gesture handling for mobile sidebar
+  useEffect(() => {
+    if (!selectedRestaurant || window.innerWidth >= 1024) return;
+
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      startY = e.touches[0].clientY;
+      isDragging = true;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isDragging) return;
+      currentY = e.touches[0].clientY;
+      
+      const deltaY = currentY - startY;
+      if (deltaY > 50) { // 아래로 50px 이상 스크롤하면 사이드바 닫기
+        setSelectedRestaurant(null);
+        isDragging = false;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      isDragging = false;
+    };
+
+    document.addEventListener('touchstart', handleTouchStart);
+    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [selectedRestaurant]);
+
   const handleReviewSubmit = async (data: { paymentMethods: string[]; comment: string; rating: number }) => {
     if (!selectedRestaurant) return;
 
@@ -275,19 +314,19 @@ export default function MapPage() {
     setSelectedRestaurant(restaurant);
     setCurrentRestaurantId(restaurant.id);
     
-    // 검색 결과 식당을 선택할 때 다른 검색 결과의 캐시 정리
-    if (restaurant.id.startsWith('search-')) {
-      setRestaurantReviews(prev => {
-        const newCache: { [key: string]: Review[] } = {};
-        // 기본 식당들과 현재 선택된 식당의 리뷰만 유지
-        Object.keys(prev).forEach(key => {
-          if (!key.startsWith('search-') || key === restaurant.id) {
-            newCache[key] = prev[key];
-          }
-        });
-        return newCache;
-      });
-    }
+    // 검색 결과 식당을 선택할 때도 리뷰 캐시는 유지 (사용자가 작성한 리뷰 보존)
+    // if (restaurant.id.startsWith('search-')) {
+    //   setRestaurantReviews(prev => {
+    //     const newCache: { [key: string]: Review[] } = {};
+    //     // 기본 식당들과 현재 선택된 식당의 리뷰만 유지
+    //     Object.keys(prev).forEach(key => {
+    //       if (!key.startsWith('search-') || key === restaurant.id) {
+    //       newCache[key] = prev[key];
+    //     }
+    //   });
+    //   return newCache;
+    // });
+    // }
     
     try {
       // 이미 로드된 리뷰가 있는지 확인
@@ -399,17 +438,17 @@ export default function MapPage() {
 
     setIsSearching(true);
     
-    // 새로운 검색 시 이전 검색 결과의 리뷰 캐시 초기화
-    setRestaurantReviews(prev => {
-      const newCache: { [key: string]: Review[] } = {};
-      // 기본 식당들의 리뷰는 유지
-      Object.keys(prev).forEach(key => {
-        if (!key.startsWith('search-')) {
-          newCache[key] = prev[key];
-        }
-      });
-      return newCache;
-    });
+    // 새로운 검색 시 이전 검색 결과의 리뷰 캐시는 유지 (사용자가 작성한 리뷰 보존)
+    // setRestaurantReviews(prev => {
+    //   const newCache: { [key: string]: Review[] } = {};
+    //   // 기본 식당들과 사용자가 작성한 리뷰는 유지
+    //   Object.keys(prev).forEach(key => {
+    //     if (!key.startsWith('search-')) {
+    //       newCache[key] = prev[key];
+    //     }
+    //   });
+    //   return newCache;
+    // });
     
     try {
       const service = new window.google.maps.places.PlacesService(document.createElement('div'));
@@ -1070,8 +1109,9 @@ export default function MapPage() {
             {/* Mobile Backdrop */}
             <div className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40" onClick={() => setSelectedRestaurant(null)} />
             
-            <div className="fixed lg:relative bottom-0 lg:bottom-auto left-0 lg:left-auto right-0 lg:right-auto w-full lg:w-96 bg-white shadow-2xl lg:shadow-lg border-t lg:border-l lg:border-t-0 overflow-y-auto max-h-[70vh] lg:max-h-none z-50 lg:z-auto transform transition-all duration-300 ease-out lg:transform-none rounded-t-2xl lg:rounded-none">
-              <div className="p-6">
+            <div className="fixed lg:relative bottom-0 lg:bottom-auto left-0 lg:left-auto right-0 lg:right-auto w-full lg:w-96 bg-white shadow-2xl lg:shadow-lg border-t lg:border-l lg:border-t-0 z-50 lg:z-auto transform transition-all duration-300 ease-out lg:transform-none rounded-t-2xl lg:rounded-none">
+              <div className="max-h-[70vh] lg:max-h-none overflow-y-auto">
+                <div className="p-6">
                 {/* Mobile Handle Bar */}
                 <div className="lg:hidden flex justify-center mb-4">
                   <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
