@@ -108,6 +108,7 @@ export default function MapPage() {
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [currentRestaurantId, setCurrentRestaurantId] = useState<string>('');
   const [restaurantReviews, setRestaurantReviews] = useState<{ [key: string]: Review[] }>({});
+  const [sidebarAnimation, setSidebarAnimation] = useState<'entering' | 'entered' | 'exiting' | 'exited'>('exited');
   
   // 현재 선택된 식당의 리뷰만 가져오는 computed value
   const currentReviews = useMemo(() => {
@@ -241,6 +242,23 @@ export default function MapPage() {
     };
   }, [selectedRestaurant]);
 
+  // Handle sidebar animation
+  useEffect(() => {
+    if (selectedRestaurant) {
+      setSidebarAnimation('entering');
+      const timer = setTimeout(() => {
+        setSidebarAnimation('entered');
+      }, 300);
+      return () => clearTimeout(timer);
+    } else {
+      setSidebarAnimation('exiting');
+      const timer = setTimeout(() => {
+        setSidebarAnimation('exited');
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedRestaurant]);
+
   // Add touch gesture handling for mobile sidebar
   useEffect(() => {
     if (!selectedRestaurant || window.innerWidth >= 1024) return;
@@ -363,71 +381,38 @@ export default function MapPage() {
     // });
     // }
     
-    try {
-      // 항상 API에서 최신 리뷰를 가져옴 (새로고침 후에도 리뷰 유지)
-      const apiReviews = await loadReviews(restaurant.id);
-      let finalReviews: Review[];
-      
-      if (apiReviews.length === 0) {
-        // 실제 리뷰가 없을 때만 샘플 리뷰 표시
-        finalReviews = [
-          {
-            id: 'sample-1',
-            restaurantId: restaurant.id,
-            restaurantName: restaurant.name,
-            paymentMethods: ['Credit Card'],
-            comment: 'Sample review - Add your own review to share actual payment options!',
-            rating: 5,
-            createdAt: '2024-01-15',
-            anonymousId: 'SampleUser',
-            helpfulCount: 0
-          }
-        ];
-      } else {
-        finalReviews = apiReviews;
-      }
-      
-      // 캐시에 저장
-      setRestaurantReviews(prev => ({
-        ...prev,
-        [restaurant.id]: finalReviews
-      }));
-      
-    } catch (error) {
-      console.error('Failed to load reviews:', error);
-      // 에러 시에도 API에서 리뷰를 다시 시도
-      try {
-        const retryReviews = await loadReviews(restaurant.id);
-        if (retryReviews.length > 0) {
-          setRestaurantReviews(prev => ({
-            ...prev,
-            [restaurant.id]: retryReviews
-          }));
-          return;
-        }
-      } catch (retryError) {
-        console.error('Retry failed:', retryError);
-      }
-      
-      // 모든 시도가 실패했을 때만 샘플 리뷰 표시
-      const errorReviews = [
-        {
-          id: 'sample-1',
-          restaurantId: restaurant.id,
-          restaurantName: restaurant.name,
-          paymentMethods: ['Credit Card'],
-          comment: 'Sample review - Add your own review to share actual payment options!',
-          rating: 5,
-          createdAt: '2024-01-15',
-          anonymousId: 'SampleUser',
-          helpfulCount: 0
-        }
-      ];
-      setRestaurantReviews(prev => ({
-        ...prev,
-        [restaurant.id]: errorReviews
-      }));
-    }
+         try {
+       // 항상 API에서 최신 리뷰를 가져옴 (새로고침 후에도 리뷰 유지)
+       const apiReviews = await loadReviews(restaurant.id);
+       
+       // 캐시에 저장 (리뷰가 없어도 빈 배열로 저장)
+       setRestaurantReviews(prev => ({
+         ...prev,
+         [restaurant.id]: apiReviews
+       }));
+       
+     } catch (error) {
+       console.error('Failed to load reviews:', error);
+       // 에러 시에도 API에서 리뷰를 다시 시도
+       try {
+         const retryReviews = await loadReviews(restaurant.id);
+         if (retryReviews.length > 0) {
+           setRestaurantReviews(prev => ({
+             ...prev,
+             [restaurant.id]: retryReviews
+           }));
+           return;
+         }
+       } catch (retryError) {
+         console.error('Retry failed:', retryError);
+       }
+       
+       // 모든 시도가 실패했을 때는 빈 배열로 설정
+       setRestaurantReviews(prev => ({
+         ...prev,
+         [restaurant.id]: []
+       }));
+     }
   };
 
   const handleReviewDelete = async (reviewId: string) => {
@@ -1143,7 +1128,11 @@ export default function MapPage() {
             {/* Mobile Backdrop - 투명하게 변경하여 지도가 보이도록 */}
             <div className="lg:hidden fixed inset-0 z-40" onClick={() => setSelectedRestaurant(null)} />
             
-            <div className="fixed lg:relative bottom-0 lg:bottom-auto left-0 lg:left-auto right-0 lg:right-auto w-full lg:w-96 bg-white shadow-2xl lg:shadow-lg border-t lg:border-l lg:border-t-0 z-50 lg:z-auto transform transition-all duration-300 ease-out lg:transform-none rounded-t-2xl lg:rounded-none">
+            <div className={`fixed lg:relative bottom-0 lg:bottom-auto left-0 lg:left-auto right-0 lg:right-auto w-full lg:w-96 bg-white shadow-2xl lg:shadow-lg border-t lg:border-l lg:border-t-0 z-50 lg:z-auto transform transition-all duration-300 ease-out lg:transform-none rounded-t-2xl lg:rounded-none ${
+              sidebarAnimation === 'entering' ? 'translate-y-full' : 
+              sidebarAnimation === 'entered' ? 'translate-y-0' : 
+              sidebarAnimation === 'exiting' ? 'translate-y-full' : 'translate-y-full'
+            }`}>
               <div className="max-h-[70vh] lg:max-h-none overflow-y-auto" data-sidebar="true">
                 <div className="p-6">
                   {/* Mobile Handle Bar - 더 눈에 띄게 */}
@@ -1296,9 +1285,16 @@ export default function MapPage() {
                           </div>
                         ))}
                       </div>
-                    ) : (
-                      <p className="text-gray-500 text-sm">{t('restaurant.noReviews')}</p>
-                    )}
+                                         ) : (
+                       <div className="text-center py-8">
+                         <div className="text-gray-400 mb-3">
+                           <MessageCircle className="h-12 w-12 mx-auto" />
+                         </div>
+                         <p className="text-gray-500 text-sm leading-relaxed">
+                           {t('restaurant.noReviewsMessage')}
+                         </p>
+                       </div>
+                     )}
                   </div>
                 </div>
               </div>
