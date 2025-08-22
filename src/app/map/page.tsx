@@ -248,35 +248,60 @@ export default function MapPage() {
     let startY = 0;
     let currentY = 0;
     let isDragging = false;
+    let lastScrollTop = 0;
 
-    const handleTouchStart = (e: TouchEvent) => {
-      startY = e.touches[0].clientY;
+    const handleTouchStart = (e: Event) => {
+      const touchEvent = e as TouchEvent;
+      startY = touchEvent.touches[0].clientY;
       isDragging = true;
     };
 
-    const handleTouchMove = (e: TouchEvent) => {
+    const handleTouchMove = (e: Event) => {
       if (!isDragging) return;
-      currentY = e.touches[0].clientY;
+      const touchEvent = e as TouchEvent;
+      currentY = touchEvent.touches[0].clientY;
       
       const deltaY = currentY - startY;
-      if (deltaY > 50) { // 아래로 50px 이상 스크롤하면 사이드바 닫기
+      
+      // 위에서 아래로 스크롤할 때 (음수 deltaY) 사이드바 닫기
+      if (deltaY < -30) {
         setSelectedRestaurant(null);
         isDragging = false;
       }
+      
+      // 아래에서 위로 스크롤할 때는 사이드바 유지
     };
 
     const handleTouchEnd = () => {
       isDragging = false;
     };
 
-    document.addEventListener('touchstart', handleTouchStart);
-    document.addEventListener('touchmove', handleTouchMove);
-    document.addEventListener('touchend', handleTouchEnd);
+    // 스크롤 감지를 위한 함수
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (target.scrollTop < lastScrollTop && target.scrollTop === 0) {
+        // 맨 위에서 위로 스크롤하면 사이드바 닫기
+        setSelectedRestaurant(null);
+      }
+      lastScrollTop = target.scrollTop;
+    };
+
+    // 사이드바 내부의 스크롤 이벤트도 감지
+    const sidebar = document.querySelector('[data-sidebar="true"]');
+    if (sidebar) {
+      sidebar.addEventListener('touchstart', handleTouchStart);
+      sidebar.addEventListener('touchmove', handleTouchMove);
+      sidebar.addEventListener('touchend', handleTouchEnd);
+      sidebar.addEventListener('scroll', handleScroll);
+    }
 
     return () => {
-      document.removeEventListener('touchstart', handleTouchStart);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleTouchEnd);
+      if (sidebar) {
+        sidebar.removeEventListener('touchstart', handleTouchStart);
+        sidebar.removeEventListener('touchmove', handleTouchMove);
+        sidebar.removeEventListener('touchend', handleTouchEnd);
+        sidebar.removeEventListener('scroll', handleScroll);
+      }
     };
   }, [selectedRestaurant]);
 
@@ -1105,15 +1130,15 @@ export default function MapPage() {
         {/* Restaurant Info Sidebar */}
         {selectedRestaurant && (
           <>
-            {/* Mobile Backdrop */}
-            <div className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40" onClick={() => setSelectedRestaurant(null)} />
+            {/* Mobile Backdrop - 투명하게 변경하여 지도가 보이도록 */}
+            <div className="lg:hidden fixed inset-0 z-40" onClick={() => setSelectedRestaurant(null)} />
             
             <div className="fixed lg:relative bottom-0 lg:bottom-auto left-0 lg:left-auto right-0 lg:right-auto w-full lg:w-96 bg-white shadow-2xl lg:shadow-lg border-t lg:border-l lg:border-t-0 z-50 lg:z-auto transform transition-all duration-300 ease-out lg:transform-none rounded-t-2xl lg:rounded-none">
-              <div className="max-h-[70vh] lg:max-h-none overflow-y-auto">
+              <div className="max-h-[70vh] lg:max-h-none overflow-y-auto" data-sidebar="true">
                 <div className="p-6">
-                  {/* Mobile Handle Bar */}
+                  {/* Mobile Handle Bar - 더 눈에 띄게 */}
                   <div className="lg:hidden flex justify-center mb-4">
-                    <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+                    <div className="w-16 h-1.5 bg-gray-400 rounded-full"></div>
                   </div>
                   
                   {/* Restaurant Header */}
