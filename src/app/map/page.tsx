@@ -1071,16 +1071,16 @@ export default function MapPage() {
             <div className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40" onClick={() => setSelectedRestaurant(null)} />
             
             <div className="fixed lg:relative bottom-0 lg:bottom-auto left-0 lg:left-auto right-0 lg:right-auto w-full lg:w-96 bg-white shadow-2xl lg:shadow-lg border-t lg:border-l lg:border-t-0 overflow-y-auto max-h-[70vh] lg:max-h-none z-50 lg:z-auto transform transition-all duration-300 ease-out lg:transform-none rounded-t-2xl lg:rounded-none">
-                        <div className="p-6">
-              {/* Mobile Handle Bar */}
-              <div className="lg:hidden flex justify-center mb-4">
-                <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
-              </div>
-              
-                              {/* Restaurant Header */}
+              <div className="p-6">
+                {/* Mobile Handle Bar */}
+                <div className="lg:hidden flex justify-center mb-4">
+                  <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+                </div>
+                
+                {/* Restaurant Header */}
                 <div className="flex justify-between items-start mb-4">
-                 <h2 className="text-xl font-bold text-gray-900">{selectedRestaurant.name}</h2>
-                                   <div className="flex items-center space-x-2">
+                  <h2 className="text-xl font-bold text-gray-900">{selectedRestaurant.name}</h2>
+                  <div className="flex items-center space-x-2">
                     <button
                       onClick={() => handleAddToFavorites(selectedRestaurant)}
                       className={`p-2 rounded-full transition-colors ${
@@ -1099,132 +1099,133 @@ export default function MapPage() {
                       <X className="h-5 w-5" />
                     </button>
                   </div>
-               </div>
-
-              {/* Restaurant Details */}
-              <div className="mb-4">
-                <p className="text-gray-600 text-sm mb-2">{selectedRestaurant.address}</p>
-                <div className="flex items-center space-x-2 mb-3">
-                  <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                  <span className="text-sm text-gray-700">
-                    {selectedRestaurant.rating} ({selectedRestaurant.reviewCount} reviews)
-                  </span>
                 </div>
-                {selectedRestaurant.id.startsWith('search-') && (
-                  <div className="mb-3">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      <Search className="h-3 w-3 mr-1" />
-                      Search Result
+
+                {/* Restaurant Details */}
+                <div className="mb-4">
+                  <p className="text-gray-600 text-sm mb-2">{selectedRestaurant.address}</p>
+                  <div className="flex items-center space-x-2 mb-3">
+                    <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                    <span className="text-sm text-gray-700">
+                      {selectedRestaurant.rating} ({selectedRestaurant.reviewCount} reviews)
                     </span>
                   </div>
-                )}
-              </div>
-
-              {/* Payment Methods */}
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                  <CreditCard className="h-5 w-5 mr-2" />
-                  Payment Methods
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {selectedRestaurant.paymentMethods.map((method, index) => (
-                    <span
-                      key={index}
-                      className={`px-3 py-1 text-sm rounded-full font-medium ${
-                        selectedPaymentMethods.includes(method)
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-gray-100 text-gray-800'
-                      }`}
-                    >
-                      {method}
-                    </span>
-                  ))}
-                </div>
-                <p className="text-sm text-gray-500 mt-2">
-                  * {t('payment.basedOnSample')}
-                </p>
-              </div>
-
-              {/* Reviews Section */}
-              <div className="mb-6">
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="text-lg font-semibold text-gray-900">{t('restaurant.reviews')}</h3>
-                  <button
-                    onClick={() => setShowReviewForm(true)}
-                    className="text-blue-600 hover:text-blue-700 text-sm flex items-center font-medium transition-colors"
-                  >
-                    <MessageCircle className="h-4 w-4 mr-1" />
-                    {t('restaurant.writeReview')}
-                  </button>
+                  {selectedRestaurant.id.startsWith('search-') && (
+                    <div className="mb-3">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        <Search className="h-3 w-3 mr-1" />
+                        Search Result
+                      </span>
+                    </div>
+                  )}
                 </div>
 
-                {currentReviews.length > 0 ? (
-                  <div className="space-y-3">
-                    {currentReviews.map((review) => (
-                      <div key={review.id} className="border rounded-lg p-3 bg-gray-50">
-                        <div className="flex justify-between items-start mb-2">
-                          <div className="flex flex-wrap gap-1">
-                            {review.paymentMethods.map((method, index) => (
-                              <span
-                                key={index}
-                                className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded font-medium"
-                              >
-                                {method}
-                              </span>
-                            ))}
-                          </div>
-                          <div className="flex items-center">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`h-3 w-3 ${
-                                  i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                                }`}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                        <p className="text-sm text-gray-700">{review.comment}</p>
-                        
-                        {/* Review Footer */}
-                        <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-200">
-                          <div className="flex items-center space-x-3 text-xs text-gray-500">
-                            <div className="flex items-center space-x-1">
-                              <User className="h-3 w-3" />
-                              <span>{review.anonymousId}</span>
-                            </div>
-                            <div className="flex items-center space-x-1">
-                              <Clock className="h-3 w-3" />
-                              <span>{review.createdAt}</span>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center space-x-2">
-                            <button
-                              onClick={() => handleHelpfulClick(review.id)}
-                              className="text-xs text-blue-600 hover:text-blue-700 flex items-center space-x-1"
-                            >
-                              <span>👍</span>
-                              <span>{review.helpfulCount}</span>
-                            </button>
-                            
-                            {review.anonymousId === anonymousId && (
-                              <button
-                                onClick={() => handleReviewDelete(review.id)}
-                                className="text-xs text-red-600 hover:text-red-700 flex items-center space-x-1"
-                              >
-                                <Trash2 className="h-3 w-3" />
-                                <span>{t('review.delete')}</span>
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
+                {/* Payment Methods */}
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                    <CreditCard className="h-5 w-5 mr-2" />
+                    Payment Methods
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedRestaurant.paymentMethods.map((method, index) => (
+                      <span
+                        key={index}
+                        className={`px-3 py-1 text-sm rounded-full font-medium ${
+                          selectedPaymentMethods.includes(method)
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}
+                      >
+                        {method}
+                      </span>
                     ))}
                   </div>
-                ) : (
-                  <p className="text-gray-500 text-sm">{t('restaurant.noReviews')}</p>
-                )}
+                  <p className="text-sm text-gray-500 mt-2">
+                    * {t('payment.basedOnSample')}
+                  </p>
+                </div>
+
+                {/* Reviews Section */}
+                <div className="mb-6">
+                  <div className="flex justify-between items-center mb-3">
+                    <h3 className="text-lg font-semibold text-gray-900">{t('restaurant.reviews')}</h3>
+                    <button
+                      onClick={() => setShowReviewForm(true)}
+                      className="text-blue-600 hover:text-blue-700 text-sm flex items-center font-medium transition-colors"
+                    >
+                      <MessageCircle className="h-4 w-4 mr-1" />
+                      {t('restaurant.writeReview')}
+                    </button>
+                  </div>
+
+                  {currentReviews.length > 0 ? (
+                    <div className="space-y-3">
+                      {currentReviews.map((review) => (
+                        <div key={review.id} className="border rounded-lg p-3 bg-gray-50">
+                          <div className="flex justify-between items-start mb-2">
+                            <div className="flex flex-wrap gap-1">
+                              {review.paymentMethods.map((method, index) => (
+                                <span
+                                  key={index}
+                                  className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded font-medium"
+                                >
+                                  {method}
+                                </span>
+                              ))}
+                            </div>
+                            <div className="flex items-center">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`h-3 w-3 ${
+                                    i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                          <p className="text-sm text-gray-700">{review.comment}</p>
+                          
+                          {/* Review Footer */}
+                          <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-200">
+                            <div className="flex items-center space-x-3 text-xs text-gray-500">
+                              <div className="flex items-center space-x-1">
+                                <User className="h-3 w-3" />
+                                <span>{review.anonymousId}</span>
+                              </div>
+                              <div className="flex items-center space-x-1">
+                                <Clock className="h-3 w-3" />
+                                <span>{review.createdAt}</span>
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center space-x-2">
+                              <button
+                                onClick={() => handleHelpfulClick(review.id)}
+                                className="text-xs text-blue-600 hover:text-blue-700 flex items-center space-x-1"
+                              >
+                                <span>👍</span>
+                                <span>{review.helpfulCount}</span>
+                              </button>
+                              
+                              {review.anonymousId === anonymousId && (
+                                <button
+                                  onClick={() => handleReviewDelete(review.id)}
+                                  className="text-xs text-red-600 hover:text-red-700 flex items-center space-x-1"
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                  <span>{t('review.delete')}</span>
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 text-sm">{t('restaurant.noReviews')}</p>
+                  )}
+                </div>
               </div>
             </div>
           </>
