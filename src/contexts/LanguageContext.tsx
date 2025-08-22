@@ -41,7 +41,6 @@ const translations = {
     
     // Payment Methods
     'payment.selectMethods': 'Select Payment Methods:',
-    'payment.basedOnSample': '* Payment methods are based on sample data. Add your own review to share actual payment options.',
     
     // Results
     'results.found': 'Found {count} restaurant(s)',
@@ -215,7 +214,6 @@ const translations = {
     
     // Payment Methods
     'payment.selectMethods': '決済方法を選択:',
-    'payment.basedOnSample': '* 決済方法はサンプルデータに基づいています。実際の決済オプションを共有するには、レビューを追加してください。',
     
     // Results
     'results.found': '{count}件のレストランが見つかりました',
@@ -389,7 +387,6 @@ const translations = {
     
     // Payment Methods
     'payment.selectMethods': '결제 방법 선택:',
-    'payment.basedOnSample': '* 결제 방법은 샘플 데이터를 기반으로 합니다. 실제 결제 옵션을 공유하려면 리뷰를 추가하세요.',
     
     // Results
     'results.found': '{count}개의 레스토랑을 찾았습니다',
@@ -563,7 +560,6 @@ const translations = {
     
     // Payment Methods
     'payment.selectMethods': '选择支付方式:',
-    'payment.basedOnSample': '* 支付方式基于示例数据。添加您自己的评论以分享实际支付选项。',
     
     // Results
     'results.found': '找到 {count} 家餐厅',

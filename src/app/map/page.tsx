@@ -1203,9 +1203,7 @@ export default function MapPage() {
                         </span>
                       ))}
                     </div>
-                    <p className="text-sm text-gray-500 mt-2">
-                      * {t('payment.basedOnSample')}
-                    </p>
+                    
                   </div>
 
                   {/* Reviews Section */}
