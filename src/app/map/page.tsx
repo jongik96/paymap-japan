@@ -660,21 +660,24 @@ export default function MapPage() {
         {/* Header */}
         <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 gap-3 sm:gap-0">
             <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
               <MapPin className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">PayMap Japan</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">PayMap Japan</h1>
             </Link>
-                         <div className="flex items-center space-x-4">
-               <LanguageToggle />
-               <ThemeToggle />
-               <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+               <div className="flex items-center gap-2">
+                 <LanguageToggle />
+                 <ThemeToggle />
+               </div>
+               <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600 dark:text-gray-300">
                  <User className="h-4 w-4" />
-                 <span>{t('header.anonymous')}: {anonymousId}</span>
+                 <span className="hidden sm:inline">{t('header.anonymous')}: {anonymousId}</span>
+                 <span className="sm:hidden">익명: {anonymousId}</span>
                </div>
                <Link 
                  href="/" 
-                 className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors"
+                 className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors text-sm"
                >
                  {t('header.backToHome')}
                </Link>
@@ -688,7 +691,7 @@ export default function MapPage() {
         <div className="max-w-7xl mx-auto space-y-3">
           {/* Search Bar */}
           <div className="relative mb-4">
-            <form onSubmit={handleSearch} className="flex gap-2">
+            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                 <input
@@ -699,41 +702,44 @@ export default function MapPage() {
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
-              <button
-                type="submit"
-                disabled={isSearching}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
-              >
-                {isSearching ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    {t('search.searching')}
-                  </>
-                ) : (
-                  <>
-                    <Search className="h-4 w-4" />
-                    {t('search.button')}
-                  </>
-                )}
-              </button>
-              {searchQuery && (
+              <div className="flex gap-2">
                 <button
-                  type="button"
-                  onClick={clearSearch}
-                  className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                  type="submit"
+                  disabled={isSearching}
+                  className="flex-1 sm:flex-none px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  {t('search.clear')}
+                  {isSearching ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span className="hidden sm:inline">{t('search.searching')}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Search className="h-4 w-4" />
+                      <span className="hidden sm:inline">{t('search.button')}</span>
+                    </>
+                  )}
                 </button>
-              )}
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={clearSearch}
+                    className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                  >
+                    {t('search.clear')}
+                  </button>
+                )}
+              </div>
             </form>
             
             {/* 검색 안내 텍스트 */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
-              <p className="text-sm text-blue-800 flex items-start">
-                <span className="mr-2">💡</span>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 sm:p-3 mt-2">
+              <p className="text-xs sm:text-sm text-blue-800 flex items-start">
+                <span className="mr-2 flex-shrink-0">💡</span>
                 <span>
                   <strong>{t('search.info')}</strong><br/>
-                  {t('search.examples')}<br/>
+                  <span className="hidden sm:inline">{t('search.examples')}</span>
+                  <span className="sm:hidden">예시: &ldquo;라멘&rdquo;, &ldquo;스시&rdquo;, &ldquo;오사카 음식점&rdquo;, &ldquo;도쿄 카페&rdquo;, &ldquo;교토 전통음식&rdquo; 등</span><br/>
                   {t('search.nationwide')}
                 </span>
               </p>
@@ -741,15 +747,15 @@ export default function MapPage() {
           </div>
 
                      {/* Advanced Search Tools */}
-           <div className="flex items-center justify-between">
-             <div className="flex items-center space-x-3">
+           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+             <div className="flex flex-wrap items-center gap-2 lg:gap-3">
                {/* Basic Payment Methods Filter */}
                <button
                  onClick={() => setShowFilters(!showFilters)}
-                 className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
+                 className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors px-2 py-1 rounded hover:bg-gray-100"
                >
                  <Filter className="h-4 w-4" />
-                 <span>{t('filters.paymentMethods')}</span>
+                 <span className="text-sm">{t('filters.paymentMethods')}</span>
                  {selectedPaymentMethods.length > 0 && (
                    <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
                      {selectedPaymentMethods.length}
@@ -760,10 +766,10 @@ export default function MapPage() {
                {/* Advanced Filters */}
                <button
                  onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-                 className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
+                 className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors px-2 py-1 rounded hover:bg-gray-100"
                >
                  <Filter className="h-4 w-4" />
-                 <span>{t('filters.advanced')}</span>
+                 <span className="text-sm">{t('filters.advanced')}</span>
                  {(advancedFilters.priceRange.length > 0 || advancedFilters.rating > 0 || advancedFilters.distance !== 10 || advancedFilters.openNow || advancedFilters.hasReviews) && (
                    <span className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
                      Active
@@ -771,31 +777,22 @@ export default function MapPage() {
                  )}
                </button>
 
-               {/* Sort Options - Hidden */}
-               {/* <button
-                 onClick={() => setShowSortOptions(!showSortOptions)}
-                 className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
-               >
-                 <SortAsc className="h-4 w-4" />
-                 <span>{t('filters.sort')}</span>
-               </button> */}
-
                {/* Search History */}
                <button
                  onClick={() => setShowSearchHistory(!showSearchHistory)}
-                 className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
+                 className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors px-2 py-1 rounded hover:bg-gray-100"
                >
                  <History className="h-4 w-4" />
-                 <span>{t('filters.history')}</span>
+                 <span className="text-sm">{t('filters.history')}</span>
                </button>
 
                {/* Favorites */}
                <button
                  onClick={() => setShowFavorites(!showFavorites)}
-                 className="flex items-center space-x-2 text-red-600 hover:text-red-700 transition-colors"
+                 className="flex items-center space-x-2 text-red-600 hover:text-red-700 transition-colors px-2 py-1 rounded hover:bg-gray-100"
                >
                  <Heart className="h-4 w-4" />
-                 <span>{t('filters.favorites')}</span>
+                 <span className="text-sm">{t('filters.favorites')}</span>
                </button>
              </div>
              
@@ -805,18 +802,18 @@ export default function MapPage() {
                    clearFilters();
                    handleAdvancedFiltersClear();
                  }}
-                 className="text-sm text-blue-600 hover:text-blue-700 underline"
+                 className="text-sm text-blue-600 hover:text-blue-700 underline self-start lg:self-auto"
                >
                  {t('filters.clearAll')}
                </button>
              )}
            </div>
 
-          {/* Payment Methods Filter */}
-          {showFilters && (
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-gray-700 mb-3">{t('payment.selectMethods')}</h3>
-              <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
+                     {/* Payment Methods Filter */}
+           {showFilters && (
+             <div className="bg-gray-50 rounded-lg p-4">
+               <h3 className="text-sm font-medium text-gray-700 mb-3">{t('payment.selectMethods')}</h3>
+               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
                 {allPaymentMethods.map((method) => (
                   <label
                     key={method}
@@ -836,24 +833,24 @@ export default function MapPage() {
           )}
           
           {/* Results Summary */}
-          <div className="flex items-center justify-between text-sm text-gray-600">
-            <div className="flex items-center space-x-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-gray-600">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               {searchResults.length > 0 ? (
-                <div className="flex items-center space-x-2">
-                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium text-xs sm:text-sm">
                     🔍 {t('results.searchResults')}: {searchResults.length}{t('results.restaurants')}
                   </span>
-                  <span className="text-gray-500">•</span>
-                  <span>{t('results.nationwideSearch')}</span>
+                  <span className="text-gray-500 hidden sm:inline">•</span>
+                  <span className="text-xs sm:text-sm">{t('results.nationwideSearch')}</span>
                 </div>
               ) : (
-                <span>{t('results.basicRestaurants').replace('{count}', filteredRestaurants.length.toString())}</span>
+                <span className="text-xs sm:text-sm">{t('results.basicRestaurants').replace('{count}', filteredRestaurants.length.toString())}</span>
               )}
               
               {selectedPaymentMethods.length > 0 && (
                 <>
-                  <span className="text-gray-500">•</span>
-                  <span>{t('results.filteredByPayment')}</span>
+                  <span className="text-gray-500 hidden sm:inline">•</span>
+                  <span className="text-xs sm:text-sm">{t('results.filteredByPayment')}</span>
                 </>
               )}
             </div>
@@ -861,7 +858,7 @@ export default function MapPage() {
             {searchResults.length > 0 && (
               <button
                 onClick={clearSearch}
-                className="text-blue-600 hover:text-blue-700 underline font-medium"
+                className="text-blue-600 hover:text-blue-700 underline font-medium text-xs sm:text-sm self-start sm:self-auto"
               >
                 {t('results.backToOriginal')}
               </button>
@@ -871,33 +868,36 @@ export default function MapPage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex h-[calc(100vh-200px)]">
+      <div className="flex flex-col lg:flex-row h-[calc(100vh-200px)]">
         {/* Map Container */}
-        <div className="flex-1 relative">
+        <div className="flex-1 relative min-h-[400px] lg:min-h-0">
           {/* Location Status */}
-          <div className="absolute top-4 left-4 z-10">
+          <div className="absolute top-4 left-2 lg:left-4 z-10">
             {locationStatus === 'detecting' && (
-              <div className="bg-blue-100 text-blue-800 px-3 py-2 rounded-lg text-sm font-medium flex items-center space-x-2">
+              <div className="bg-blue-100 text-blue-800 px-2 lg:px-3 py-2 rounded-lg text-xs lg:text-sm font-medium flex items-center space-x-2">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                <span>{t('map.locationDetecting')}</span>
+                <span className="hidden sm:inline">{t('map.locationDetecting')}</span>
+                <span className="sm:hidden">위치 감지 중...</span>
               </div>
             )}
             {locationStatus === 'success' && (
-              <div className="bg-green-100 text-green-800 px-3 py-2 rounded-lg text-sm font-medium flex items-center space-x-2">
+              <div className="bg-green-100 text-green-800 px-2 lg:px-3 py-2 rounded-lg text-xs lg:text-sm font-medium flex items-center space-x-2">
                 <span>✅</span>
-                <span>{t('map.currentLocationSuccess')}</span>
+                <span className="hidden sm:inline">{t('map.currentLocationSuccess')}</span>
+                <span className="sm:hidden">현재 위치</span>
               </div>
             )}
             {locationStatus === 'error' && (
-              <div className="bg-orange-100 text-orange-800 px-3 py-2 rounded-lg text-sm font-medium flex items-center space-x-2">
+              <div className="bg-orange-100 text-orange-800 px-2 lg:px-3 py-2 rounded-lg text-xs lg:text-sm font-medium flex items-center space-x-2">
                 <span>📍</span>
-                <span>{t('map.kyotoDefault')}</span>
+                <span className="hidden sm:inline">{t('map.kyotoDefault')}</span>
+                <span className="sm:hidden">교토 (기본)</span>
               </div>
             )}
           </div>
 
           {/* Map Controls */}
-          <div className="absolute top-4 right-4 z-10 flex flex-col space-y-2">
+          <div className="absolute top-4 right-2 lg:right-4 z-10 flex flex-col space-y-2">
             {/* Zoom Controls */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
               <button
@@ -928,7 +928,7 @@ export default function MapPage() {
           
           {/* Search Results List Overlay */}
           {searchResults.length > 0 && showSearchResultsList && (
-            <div className="absolute top-20 left-4 z-10 w-80 max-h-96 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div className="absolute top-20 left-2 right-2 lg:left-4 lg:right-auto z-10 w-auto lg:w-80 max-w-sm lg:max-w-none max-h-96 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
               {/* Header */}
               <div className="flex items-center justify-between p-3 bg-blue-600 text-white">
                 <h3 className="font-semibold text-sm">
@@ -1000,7 +1000,7 @@ export default function MapPage() {
           {searchResults.length > 0 && !showSearchResultsList && (
             <button
               onClick={() => setShowSearchResultsList(true)}
-              className="absolute top-20 left-4 z-10 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg shadow-lg transition-colors flex items-center space-x-2"
+              className="absolute top-20 left-2 right-2 lg:left-4 lg:right-auto z-10 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg shadow-lg transition-colors flex items-center justify-center lg:justify-start space-x-2"
               title={t('map.showSearchResults')}
             >
               <Search className="h-4 w-4" />
@@ -1053,7 +1053,7 @@ export default function MapPage() {
 
         {/* Restaurant Info Sidebar */}
         {selectedRestaurant && (
-          <div className="w-96 bg-white shadow-lg border-l overflow-y-auto">
+          <div className="w-full lg:w-96 bg-white shadow-lg border-t lg:border-l lg:border-t-0 overflow-y-auto max-h-[50vh] lg:max-h-none">
             <div className="p-6">
                              {/* Restaurant Header */}
                <div className="flex justify-between items-start mb-4">
