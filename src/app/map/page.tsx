@@ -329,17 +329,12 @@ export default function MapPage() {
     // }
     
     try {
-      // 이미 로드된 리뷰가 있는지 확인
-      if (restaurantReviews[restaurant.id]) {
-        return;
-      }
-      
-      // Load reviews for this restaurant from API
+      // 항상 API에서 최신 리뷰를 가져옴 (새로고침 후에도 리뷰 유지)
       const apiReviews = await loadReviews(restaurant.id);
       let finalReviews: Review[];
       
       if (apiReviews.length === 0) {
-        // Show sample review if no real reviews exist
+        // 실제 리뷰가 없을 때만 샘플 리뷰 표시
         finalReviews = [
           {
             id: 'sample-1',
@@ -365,7 +360,21 @@ export default function MapPage() {
       
     } catch (error) {
       console.error('Failed to load reviews:', error);
-      // Show sample review on error
+      // 에러 시에도 API에서 리뷰를 다시 시도
+      try {
+        const retryReviews = await loadReviews(restaurant.id);
+        if (retryReviews.length > 0) {
+          setRestaurantReviews(prev => ({
+            ...prev,
+            [restaurant.id]: retryReviews
+          }));
+          return;
+        }
+      } catch (retryError) {
+        console.error('Retry failed:', retryError);
+      }
+      
+      // 모든 시도가 실패했을 때만 샘플 리뷰 표시
       const errorReviews = [
         {
           id: 'sample-1',
@@ -379,7 +388,6 @@ export default function MapPage() {
           helpfulCount: 0
         }
       ];
-      // 에러 시에도 캐시에 저장
       setRestaurantReviews(prev => ({
         ...prev,
         [restaurant.id]: errorReviews
@@ -438,17 +446,8 @@ export default function MapPage() {
 
     setIsSearching(true);
     
-    // 새로운 검색 시 이전 검색 결과의 리뷰 캐시는 유지 (사용자가 작성한 리뷰 보존)
-    // setRestaurantReviews(prev => {
-    //   const newCache: { [key: string]: Review[] } = {};
-    //   // 기본 식당들과 사용자가 작성한 리뷰는 유지
-    //   Object.keys(prev).forEach(key => {
-    //     if (!key.startsWith('search-')) {
-    //       newCache[key] = prev[key];
-    //     }
-    //   });
-    //   return newCache;
-    // });
+    // 새로운 검색 시에도 이전에 로드된 리뷰는 유지 (사용자가 작성한 리뷰 보존)
+    // 리뷰 캐시를 초기화하지 않음
     
     try {
       const service = new window.google.maps.places.PlacesService(document.createElement('div'));
