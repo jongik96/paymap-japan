@@ -25,7 +25,31 @@
 
 ### 🔧 다음 단계
 
-#### 1. **실제 광고 슬롯 ID 교체**
+#### 1. **Google AdSense 크롤러 문제 해결**
+만약 "사이트를 확인할 수 없습니다" 오류가 발생한다면:
+
+##### **A. 사이트 배포 확인**
+```bash
+# Vercel에 배포
+vercel --prod
+
+# 또는 GitHub 연동으로 자동 배포
+git add .
+git commit -m "Add Google AdSense integration"
+git push origin main
+```
+
+##### **B. 사이트 접근성 확인**
+- 배포된 URL이 정상적으로 로드되는지 확인
+- `https://paymap-japan.vercel.app` 같은 실제 URL 확인
+- 모바일에서도 접근 가능한지 확인
+
+##### **C. Google Search Console 등록**
+1. [Google Search Console](https://search.google.com/search-console)에 사이트 등록
+2. 사이트맵 제출: `https://paymap-japan.vercel.app/sitemap.xml`
+3. 색인 생성 요청
+
+#### 2. **실제 광고 슬롯 ID 교체**
 현재 코드에서 사용 중인 플레이스홀더 광고 슬롯 ID들을 실제 ID로 교체해야 합니다:
 
 ```typescript

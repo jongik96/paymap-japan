@@ -17,8 +17,11 @@ export default function GoogleAdSense({
 }: GoogleAdSenseProps) {
   useEffect(() => {
     try {
-      // @ts-expect-error - Google AdSense global variable
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
+      // Google AdSense 코드 스니펫 방식
+      if (typeof window !== 'undefined') {
+        // @ts-expect-error - Google AdSense global variable
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      }
     } catch (error) {
       console.error('AdSense error:', error);
     }
