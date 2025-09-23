@@ -1,0 +1,37 @@
+'use client';
+
+import { useEffect } from 'react';
+
+interface GoogleAdSenseProps {
+  adSlot: string;
+  adFormat?: 'auto' | 'rectangle' | 'vertical' | 'horizontal';
+  adStyle?: React.CSSProperties;
+  className?: string;
+}
+
+export default function GoogleAdSense({
+  adSlot,
+  adFormat = 'auto',
+  adStyle = { display: 'block' },
+  className = '',
+}: GoogleAdSenseProps) {
+  useEffect(() => {
+    try {
+      // @ts-ignore
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (error) {
+      console.error('AdSense error:', error);
+    }
+  }, []);
+
+  return (
+    <ins
+      className={`adsbygoogle ${className}`}
+      style={adStyle}
+      data-ad-client="ca-pub-8843011911940029"
+      data-ad-slot={adSlot}
+      data-ad-format={adFormat}
+      data-full-width-responsive="true"
+    />
+  );
+}

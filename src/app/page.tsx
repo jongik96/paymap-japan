@@ -3,6 +3,7 @@
 import { MapPin, CreditCard, Star, MessageCircle } from "lucide-react";
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
+import GoogleAdSense from '@/components/GoogleAdSense';
 
 export default function Home() {
   const { t } = useLanguage();
@@ -74,6 +75,16 @@ export default function Home() {
           </div>
         </div>
 
+        {/* AdSense Banner - Features 아래 */}
+        <div className="flex justify-center mb-8">
+          <GoogleAdSense
+            adSlot="1234567890" // 실제 광고 슬롯 ID로 교체 필요
+            adFormat="horizontal"
+            className="w-full max-w-728px"
+            adStyle={{ display: 'block', height: '90px' }}
+          />
+        </div>
+
         {/* How it works */}
         <div className="bg-white rounded-lg shadow-sm border p-8">
           <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">{t('howToUse')}</h3>
@@ -99,6 +110,16 @@ export default function Home() {
               <p className="text-sm text-gray-600 break-words leading-relaxed">{t('writeReviewDesc')}</p>
             </div>
           </div>
+        </div>
+
+        {/* AdSense Rectangle - How it works 아래 */}
+        <div className="flex justify-center mt-8">
+          <GoogleAdSense
+            adSlot="0987654321" // 실제 광고 슬롯 ID로 교체 필요
+            adFormat="rectangle"
+            className="w-full max-w-300px"
+            adStyle={{ display: 'block', height: '250px' }}
+          />
         </div>
       </main>
 

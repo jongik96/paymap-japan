@@ -14,6 +14,7 @@ import SearchHistory from '@/components/SearchHistory';
 import Favorites, { addToFavorites, isInFavorites } from '@/components/Favorites';
 import { addSearchToHistory } from '@/components/SearchHistory';
 import { useLanguage } from '@/contexts/LanguageContext';
+import GoogleAdSense from '@/components/GoogleAdSense';
 
 
 
@@ -480,7 +481,7 @@ export default function MapPage() {
 
       service.textSearch(request, (results, status) => {
         if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
-          const restaurants: Restaurant[] = results.slice(0, 20).map((place, index) => ({ // 결과 수를 20개로 증가
+          const restaurants: Restaurant[] = results.slice(0, 20).map((place) => ({ // 결과 수를 20개로 증가
             id: `search-${place.place_id}`,
             name: place.name || 'Unknown Restaurant',
             address: place.formatted_address || 'Address not available',
@@ -1014,9 +1015,19 @@ export default function MapPage() {
                 </button>
               </div>
               
+              {/* AdSense Banner in Search Results */}
+              <div className="p-2 bg-gray-50 dark:bg-gray-700">
+                <GoogleAdSense
+                  adSlot="1111111111" // 실제 광고 슬롯 ID로 교체 필요
+                  adFormat="horizontal"
+                  className="w-full"
+                  adStyle={{ display: 'block', height: '50px' }}
+                />
+              </div>
+              
               {/* Results List */}
               <div className="max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                {searchResults.map((restaurant, index) => (
+                {searchResults.map((restaurant) => (
                   <div
                     key={restaurant.id}
                     className="p-3 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors last:border-b-0"
