@@ -13,14 +13,12 @@ interface PaymentMethodStat {
 }
 
 interface PaymentMethodStatsProps {
-  data?: PaymentMethodStat[];
   isLoading?: boolean;
 }
 
 
 
 export default function PaymentMethodStats({ 
-  data, 
   isLoading = false 
 }: PaymentMethodStatsProps) {
   const { t } = useLanguage();

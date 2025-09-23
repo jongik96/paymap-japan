@@ -17,7 +17,7 @@ export default function GoogleAdSense({
 }: GoogleAdSenseProps) {
   useEffect(() => {
     try {
-      // @ts-ignore
+      // @ts-expect-error - Google AdSense global variable
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch (error) {
       console.error('AdSense error:', error);

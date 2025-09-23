@@ -40,18 +40,18 @@ export default function Favorites({
     }
   }, [isOpen]);
 
-  const addToFavoritesLocal = (restaurant: Restaurant, note?: string) => {
-    const newFavorite: FavoriteItem = {
-      id: Date.now().toString(),
-      restaurant,
-      addedAt: Date.now(),
-      note,
-    };
+  // const addToFavoritesLocal = (restaurant: Restaurant, note?: string) => {
+  //   const newFavorite: FavoriteItem = {
+  //     id: Date.now().toString(),
+  //     restaurant,
+  //     addedAt: Date.now(),
+  //     note,
+  //   };
 
-    const updatedFavorites = [newFavorite, ...favorites.filter(f => f.restaurant.id !== restaurant.id)];
-    setFavorites(updatedFavorites);
-    localStorage.setItem('paymap_favorites', JSON.stringify(updatedFavorites));
-  };
+  //   const updatedFavorites = [newFavorite, ...favorites.filter(f => f.restaurant.id !== restaurant.id)];
+  //   setFavorites(updatedFavorites);
+  //   localStorage.setItem('paymap_favorites', JSON.stringify(updatedFavorites));
+  // };
 
   const removeFromFavorites = (id: string) => {
     const updatedFavorites = favorites.filter(f => f.id !== id);
@@ -295,7 +295,7 @@ export const isInFavorites = (restaurantId: string): boolean => {
   try {
     const favorites: FavoriteItem[] = JSON.parse(saved);
     return favorites.some(f => f.restaurant.id === restaurantId);
-  } catch (error) {
+  } catch {
     return false;
   }
 };
