@@ -655,7 +655,7 @@ export default function MapPage() {
             setMapZoom(14);
             setLocationStatus('success');
           }
-        },
+        }, 
         (error) => {
           console.log('❌ Geolocation error:', error);
           console.log('📍 Moving to Kyoto due to geolocation error');
