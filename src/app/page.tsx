@@ -4,18 +4,21 @@ import { MapPin, CreditCard, Star, MessageCircle } from "lucide-react";
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
 import GoogleAdSense from '@/components/GoogleAdSense';
+import StructuredData from '@/components/StructuredData';
 
 export default function Home() {
-  const { t } = useLanguage();
+  const { t, getCurrentLanguage } = useLanguage();
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <>
+      <StructuredData type="website" language={getCurrentLanguage()} />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-2">
               <MapPin className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">PayMap Japan</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Japan Food Web</h1>
             </div>
             <div className="flex items-center space-x-4">
               <p className="text-sm text-gray-600">{t('paymentMethodReviewService')}</p>
@@ -127,10 +130,11 @@ export default function Home() {
       <footer className="bg-gray-50 border-t mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center text-gray-600">
-            <p>&copy; 2025 PayMap Japan. Community for Payment Method in Japan</p>
+            <p>&copy; 2025 Japan Food Web. 일본 음식점 결제수단 정보 서비스</p>
           </div>
         </div>
       </footer>
-    </div>
+      </div>
+    </>
   );
 }

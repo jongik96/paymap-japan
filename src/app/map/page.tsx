@@ -15,6 +15,7 @@ import Favorites, { addToFavorites, isInFavorites } from '@/components/Favorites
 import { addSearchToHistory } from '@/components/SearchHistory';
 import { useLanguage } from '@/contexts/LanguageContext';
 import GoogleAdSense from '@/components/GoogleAdSense';
+import StructuredData from '@/components/StructuredData';
 
 
 
@@ -105,7 +106,7 @@ const loadReviews = async (restaurantId: string): Promise<Review[]> => {
 const GOOGLE_MAPS_LIBRARIES: ("places")[] = ['places'];
 
 export default function MapPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [currentRestaurantId, setCurrentRestaurantId] = useState<string>('');
   const [restaurantReviews, setRestaurantReviews] = useState<{ [key: string]: Review[] }>({});
@@ -728,7 +729,9 @@ export default function MapPage() {
   }
 
           return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+      <>
+        <StructuredData type="service" language={language} />
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
         {/* Header */}
         <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1379,5 +1382,6 @@ export default function MapPage() {
          />
        </div>
      </div>
+     </>
    );
  }

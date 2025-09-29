@@ -2,14 +2,16 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://paymap-japan.vercel.app/sitemap.xml
+Sitemap: https://japan-food-web.com/sitemap.xml
 
-# Disallow admin or private areas (if any)
+# Disallow admin or private areas
 Disallow: /api/
 Disallow: /_next/
+Disallow: /admin/
 
 # Allow important pages
 Allow: /
 Allow: /map
-Allow: /about
-Allow: /contact
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1

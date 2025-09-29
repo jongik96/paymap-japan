@@ -8,6 +8,7 @@ interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: (key: string) => string;
+  getCurrentLanguage: () => Language;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -739,11 +740,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     return translation;
   };
 
+  const getCurrentLanguage = () => language;
+
   return (
     <LanguageContext.Provider value={{
       language,
       setLanguage: handleLanguageChange,
-      t
+      t,
+      getCurrentLanguage
     }}>
       {children}
     </LanguageContext.Provider>
