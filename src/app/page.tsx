@@ -23,6 +23,17 @@ export default function Home() {
             <div className="flex items-center space-x-4">
               <p className="text-sm text-gray-600">{t('paymentMethodReviewService')}</p>
               <LanguageToggle />
+              <nav className="hidden md:flex items-center space-x-4">
+                <Link href="/guide" className="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors">
+                  {t('guide.title')}
+                </Link>
+                <Link href="/privacy" className="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors">
+                  {t('privacy.title')}
+                </Link>
+                <Link href="/contact" className="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors">
+                  {t('contact.title')}
+                </Link>
+              </nav>
             </div>
           </div>
         </div>

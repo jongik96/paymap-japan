@@ -744,6 +744,17 @@ export default function MapPage() {
                <div className="flex items-center gap-2">
                  <LanguageToggle />
                  <ThemeToggle />
+                 <nav className="hidden lg:flex items-center space-x-4 ml-4">
+                   <Link href="/guide" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium transition-colors">
+                     {t('guide.title')}
+                   </Link>
+                   <Link href="/privacy" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium transition-colors">
+                     {t('privacy.title')}
+                   </Link>
+                   <Link href="/contact" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium transition-colors">
+                     {t('contact.title')}
+                   </Link>
+                 </nav>
                </div>
                <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600 dark:text-gray-300">
                  <User className="h-4 w-4" />

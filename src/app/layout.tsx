@@ -27,6 +27,20 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
+        {/* Favicon */}
+        <link rel="icon" href="/map.png" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/map.png" type="image/png" sizes="16x16" />
+        <link rel="shortcut icon" href="/map.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/map.png" sizes="180x180" />
+        <link rel="apple-touch-icon" href="/map.png" sizes="152x152" />
+        <link rel="apple-touch-icon" href="/map.png" sizes="144x144" />
+        <link rel="apple-touch-icon" href="/map.png" sizes="120x120" />
+        <link rel="apple-touch-icon" href="/map.png" sizes="114x114" />
+        <link rel="apple-touch-icon" href="/map.png" sizes="76x76" />
+        <link rel="apple-touch-icon" href="/map.png" sizes="72x72" />
+        <link rel="apple-touch-icon" href="/map.png" sizes="60x60" />
+        <link rel="apple-touch-icon" href="/map.png" sizes="57x57" />
+        
         {/* Google AdSense */}
         <script
           async

@@ -34,7 +34,7 @@ export function generateMetadata(language: Language): Metadata {
       siteName: "Japan Food Web",
       images: [
         {
-          url: "/og-image-simple.jpg",
+          url: "/food-web.png",
           width: 1200,
           height: 630,
           alt: seoData.title,
@@ -45,7 +45,7 @@ export function generateMetadata(language: Language): Metadata {
       card: "summary_large_image",
       title: seoData.title,
       description: seoData.description,
-      images: ["/og-image.jpg"],
+      images: ["/food-web.png"],
     },
     alternates: {
       canonical: seoData.alternateUrls[language],
