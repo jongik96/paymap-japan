@@ -275,7 +275,7 @@ const translations = {
     'contact.info.email.title': 'Email Inquiry',
     'contact.info.email.description': 'This is the fastest and most accurate way to get a response.',
     'contact.info.response.title': 'Response Time',
-    'contact.info.response.description': 'We respond within 24 hours on weekdays and within 48 hours on weekends.',
+    'contact.info.response.description': 'We respond within one week.',
     'contact.info.hours.title': 'Service Hours',
     'contact.info.hours.description': 'You can contact us 24/7 anytime.',
     'contact.form.title': 'Contact Us',
@@ -299,6 +299,9 @@ const translations = {
     'contact.faq.q4.answer': 'Yes, we do not collect personal identification information and only use anonymized data. We securely transmit and store data through SSL encryption.',
     'contact.navigation.guide': 'User Guide',
     'contact.navigation.privacy': 'Privacy Policy',
+    
+    // Footer
+    'footer.copyright': '© 2025 Japan Food Web. Japanese Restaurant Payment Method Information Service',
   },
   ja: {
     // Header
@@ -560,7 +563,7 @@ const translations = {
     'contact.info.email.title': 'メールお問い合わせ',
     'contact.info.email.description': '最も迅速で正確な回答を受けられる方法です。',
     'contact.info.response.title': '回答時間',
-    'contact.info.response.description': '平日24時間以内、週末48時間以内に回答いたします。',
+    'contact.info.response.description': '1週間以内に回答いたします。',
     'contact.info.hours.title': 'サービス時間',
     'contact.info.hours.description': '24時間いつでもお問い合わせいただけます。',
     'contact.form.title': 'お問い合わせ',
@@ -584,6 +587,9 @@ const translations = {
     'contact.faq.q4.answer': 'はい、個人識別情報は収集せず、匿名化されたデータのみを使用します。SSL暗号化を通じて安全にデータを送信・保存します。',
     'contact.navigation.guide': '利用ガイド',
     'contact.navigation.privacy': 'プライバシーポリシー',
+    
+    // Footer
+    'footer.copyright': '© 2025 Japan Food Web. 日本レストラン決済方法情報サービス',
   },
   ko: {
     // Header
@@ -845,7 +851,7 @@ const translations = {
     'contact.info.email.title': '이메일 문의',
     'contact.info.email.description': '가장 빠르고 정확한 답변을 받을 수 있는 방법입니다.',
     'contact.info.response.title': '답변 시간',
-    'contact.info.response.description': '평일 24시간 이내, 주말 48시간 이내에 답변드립니다.',
+    'contact.info.response.description': '1주일 이내에 답변드립니다.',
     'contact.info.hours.title': '서비스 시간',
     'contact.info.hours.description': '24시간 언제든지 문의하실 수 있습니다.',
     'contact.form.title': '문의하기',
@@ -869,6 +875,9 @@ const translations = {
     'contact.faq.q4.answer': '네, 개인식별정보는 수집하지 않으며, 익명화된 데이터만 사용합니다. SSL 암호화를 통해 안전하게 데이터를 전송하고 저장합니다.',
     'contact.navigation.guide': '사용가이드',
     'contact.navigation.privacy': '개인정보처리방침',
+    
+    // Footer
+    'footer.copyright': '© 2025 Japan Food Web. 일본 음식점 결제수단 정보 서비스',
   },
   zh: {
     // Header
@@ -1130,7 +1139,7 @@ const translations = {
     'contact.info.email.title': '邮件咨询',
     'contact.info.email.description': '这是获得最快、最准确回复的方法。',
     'contact.info.response.title': '回复时间',
-    'contact.info.response.description': '我们会在工作日内24小时内、周末48小时内回复。',
+    'contact.info.response.description': '我们会在1周内回复。',
     'contact.info.hours.title': '服务时间',
     'contact.info.hours.description': '您可以24小时随时联系我们。',
     'contact.form.title': '联系我们',
@@ -1154,6 +1163,9 @@ const translations = {
     'contact.faq.q4.answer': '是的，我们不收集个人识别信息，只使用匿名化数据。我们通过SSL加密安全地传输和存储数据。',
     'contact.navigation.guide': '使用指南',
     'contact.navigation.privacy': '隐私政策',
+    
+    // Footer
+    'footer.copyright': '© 2025 Japan Food Web. 日本餐厅支付方式信息服务',
   }
 };
 

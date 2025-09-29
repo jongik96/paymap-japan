@@ -142,7 +142,7 @@ export default function Home() {
       <footer className="bg-gray-50 border-t mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center text-gray-600">
-            <p>&copy; 2025 Japan Food Web. 일본 음식점 결제수단 정보 서비스</p>
+            <p>{t('footer.copyright')}</p>
           </div>
         </div>
       </footer>
