@@ -37,18 +37,18 @@ export default function SearchHistory({
     }
   }, [isOpen]);
 
-  const addToHistory = (query: string, location?: { lat: number; lng: number }) => {
-    const newItem: SearchHistoryItem = {
-      id: Date.now().toString(),
-      query,
-      timestamp: Date.now(),
-      location,
-    };
+  // const addToHistory = (query: string, location?: { lat: number; lng: number }) => {
+  //   const newItem: SearchHistoryItem = {
+  //     id: Date.now().toString(),
+  //     query,
+  //     timestamp: Date.now(),
+  //     location,
+  //   };
 
-    const updatedHistory = [newItem, ...searchHistory.filter(item => item.query !== query)].slice(0, 10);
-    setSearchHistory(updatedHistory);
-    localStorage.setItem('paymap_search_history', JSON.stringify(updatedHistory));
-  };
+  //   const updatedHistory = [newItem, ...searchHistory.filter(item => item.query !== query)].slice(0, 10);
+  //   setSearchHistory(updatedHistory);
+  //   localStorage.setItem('paymap_search_history', JSON.stringify(updatedHistory));
+  // };
 
   const removeFromHistory = (id: string) => {
     const updatedHistory = searchHistory.filter(item => item.id !== id);

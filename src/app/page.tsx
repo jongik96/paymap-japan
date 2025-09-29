@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
 import GoogleAdSense from '@/components/GoogleAdSense';
 import StructuredData from '@/components/StructuredData';
+import Link from 'next/link';
 
 export default function Home() {
   const { t, getCurrentLanguage } = useLanguage();

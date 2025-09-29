@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { CreditCard, TrendingUp, BarChart3, PieChart } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
+// import { useLanguage } from '@/contexts/LanguageContext'; // 사용하지 않는 import
 
 interface PaymentMethodStat {
   method: string;
@@ -21,7 +21,7 @@ interface PaymentMethodStatsProps {
 export default function PaymentMethodStats({ 
   isLoading = false 
 }: PaymentMethodStatsProps) {
-  const { t } = useLanguage();
+  // const { t } = useLanguage(); // 사용하지 않는 변수
   const [viewMode, setViewMode] = useState<'list' | 'chart'>('list');
   const [actualData, setActualData] = useState<PaymentMethodStat[]>([]);
 

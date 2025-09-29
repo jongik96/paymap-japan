@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Star, TrendingUp, MapPin, MessageCircle, Crown, Award, Medal } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
+// import { useLanguage } from '@/contexts/LanguageContext'; // 사용하지 않는 import
 
 interface PopularRestaurant {
   id: string;
@@ -25,10 +25,10 @@ interface PopularRestaurantsProps {
 
 
 export default function PopularRestaurants({ 
-  data, 
+  // data, // 사용하지 않는 prop
   isLoading = false 
 }: PopularRestaurantsProps) {
-  const { t } = useLanguage();
+  // const { t } = useLanguage(); // 사용하지 않는 변수
   const [sortBy, setSortBy] = useState<'rating' | 'reviews' | 'visits'>('rating');
   const [actualData, setActualData] = useState<PopularRestaurant[]>([]);
 

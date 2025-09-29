@@ -1,18 +1,18 @@
 import { Metadata } from 'next';
 import { getSEOData, getStructuredData, type Language } from '@/lib/seo';
 
-interface MultilingualSEOProps {
-  language: Language;
-  type?: 'website' | 'service' | 'restaurant';
-  restaurantData?: {
-    name: string;
-    address: string;
-    lat: number;
-    lng: number;
-    rating?: number;
-    reviewCount?: number;
-  };
-}
+// interface MultilingualSEOProps {
+//   language: Language;
+//   type?: 'website' | 'service' | 'restaurant';
+//   restaurantData?: {
+//     name: string;
+//     address: string;
+//     lat: number;
+//     lng: number;
+//     rating?: number;
+//     reviewCount?: number;
+//   };
+// }
 
 export function generateMetadata(language: Language): Metadata {
   const seoData = getSEOData(language);

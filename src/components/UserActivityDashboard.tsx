@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { 
   Users, 
   MessageCircle, 
-  MapPin, 
   Clock, 
   TrendingUp, 
   Eye,
@@ -13,7 +12,7 @@ import {
   Calendar,
   BarChart3
 } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
+// import { useLanguage } from '@/contexts/LanguageContext'; // 사용하지 않는 import
 
 interface ActivityMetric {
   label: string;
@@ -46,10 +45,10 @@ interface UserActivityDashboardProps {
 }
 
 export default function UserActivityDashboard({ 
-  data, 
+  // data, // 사용하지 않는 prop
   isLoading = false 
 }: UserActivityDashboardProps) {
-  const { t } = useLanguage();
+  // const { t } = useLanguage(); // 사용하지 않는 변수
   const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d'>('24h');
   const [actualData, setActualData] = useState<{ 
     metrics: ActivityMetric[]; 
@@ -183,7 +182,7 @@ export default function UserActivityDashboard({
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {displayData.metrics.map((metric, index) => (
+        {displayData.metrics.map((metric) => (
           <div
             key={metric.label}
             className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"

@@ -1,6 +1,6 @@
 'use client';
 
-import { Shield, Eye, Lock, Database, Mail, Phone, MapPin } from 'lucide-react';
+import { Shield, Eye, Lock, Database, Mail, MapPin } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
 import ThemeToggle from '@/components/ThemeToggle';

@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Star, X, Send, Check, AlertTriangle, Shield, Info } from 'lucide-react';
+import { Star, X, Send, AlertTriangle, Shield, Info } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { reviewsApi } from '@/lib/api';
+// import { reviewsApi } from '@/lib/api'; // 사용하지 않는 import
 import { validateReview, ContentFilterResult } from '@/lib/contentFilter';
 
 const reviewSchema = z.object({
