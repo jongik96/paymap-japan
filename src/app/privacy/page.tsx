@@ -6,6 +6,7 @@ import LanguageToggle from '@/components/LanguageToggle';
 import ThemeToggle from '@/components/ThemeToggle';
 import Link from 'next/link';
 import StructuredData from '@/components/StructuredData';
+import GoogleAdSense from '@/components/GoogleAdSense';
 
 export default function PrivacyPage() {
   const { t } = useLanguage();
@@ -193,6 +194,16 @@ export default function PrivacyPage() {
                 </p>
               </div>
             </section>
+
+            {/* AdSense Banner */}
+            <div className="flex justify-center mb-8">
+              <GoogleAdSense
+                adSlot="1234567890" // 실제 광고 슬롯 ID로 교체 필요
+                adFormat="horizontal"
+                className="w-full max-w-728px"
+                adStyle={{ display: 'block', height: '90px' }}
+              />
+            </div>
 
             {/* Navigation */}
             <div className="text-center pt-8 border-t border-gray-200 dark:border-gray-700">
