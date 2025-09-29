@@ -9,16 +9,16 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Add proper redirects for App Router
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/',
-        permanent: false,
-      },
-    ]
-  },
+  // Remove problematic redirects that cause infinite loops
+  // async redirects() {
+  //   return [
+  //     {
+  //       source: '/',
+  //       destination: '/',
+  //       permanent: false,
+  //     },
+  //   ]
+  // },
 }
 
 module.exports = nextConfig
